@@ -1,0 +1,3 @@
+Bundle-SymbolicName=org.openmuc.framework.openmuc-driver-mqtt
+Bundle-Name=OpenMUC Driver - MQTT
+Bundle-Vendor=Fraunhofer ISE

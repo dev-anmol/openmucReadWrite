@@ -1,0 +1,5 @@
+Bundle-SymbolicName=org.openmuc.framework.openmuc-server-modbus
+Bundle-Name=OpenMUC Server - Modbus
+Bundle-Vendor=Fraunhofer ISE
+Bundle-ClassPath=.,lib/j2mod-3.2.1.jar
+Import-Package=\!com.ghgande.j2mod*,gnu.io;resolution\:\=optional,com.fazecast*;resolution\:\=optional, *;version\=0

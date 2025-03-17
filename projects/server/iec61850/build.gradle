@@ -1,0 +1,56 @@
+def projectName = "OpenMUC Server - IEC61850 MMC"
+def projectDescription = "IEC61850 server for the OpenMUC framework."
+
+configurations.create('embed')
+
+def openiec61850version = '1.9.0'
+def openiec61850name = 'iec61850bean'
+
+def jasn1name = 'asn1bean'
+def jasn1version = '1.12.0'
+
+def jacksonBOMVersion = '2.17.2'
+
+dependencies {
+    implementation project(':openmuc-core-api')
+    implementation project(':openmuc-core-spi')
+    implementation group: 'org.osgi', name: 'org.osgi.service.cm', version: osgiServiceCmVersion
+
+    implementation 'com.beanit:' + jasn1name + ':' + jasn1version
+    implementation project(path: ':openmuc-lib-osgi')
+    testImplementation project(path: ':openmuc-core-datamanager')
+    embed group: 'com.beanit', name: jasn1name, version: jasn1version
+
+    implementation 'com.beanit:' + openiec61850name + ':' + openiec61850version
+    embed group: 'com.beanit', name: openiec61850name, version: openiec61850version
+
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: jacksonBOMVersion
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: jacksonBOMVersion
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: jacksonBOMVersion
+
+    testImplementation("org.assertj:assertj-core:3.25.3")
+    testImplementation group: 'org.apache.felix', name:'org.apache.felix.framework', version: apacheFelixVersion
+    testImplementation project(':openmuc-core-datamanager').sourceSets.test.output
+}
+
+jar {
+    def name = "OpenMUC Server - IEC 61850"
+    bnd('Bundle-Name': name,
+            'Bundle-ClassPath': '.,lib/' + openiec61850name + '-' + openiec61850version + '.jar,lib/' + jasn1name + '-' + jasn1version + '.jar',
+            'Import-Package': '!com.beanit.openiec61850.*,*' + jarDefaultImportPackageVersion)
+
+    into('lib') {
+        from configurations.embed
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            pom {
+                name = projectName
+                description = projectDescription
+            }
+        }
+    }
+}

@@ -1,0 +1,328 @@
+#!/usr/bin/env bash
+#Scriptname: openmuc
+#Description: script to start, stop, restart and reload OpenMUC
+
+# Add JVM options here.
+JVM_OPTS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:5005"
+JVM_OPTS=""
+# Optionally set the location of the openmuc framework. If the
+# variable is not set, it is assumed that this script is located
+# within the "bin" folder of the openmuc framework folder.
+# OPENMUC_HOME="/path/to/openmuc/"
+
+find_openmuc_home()
+{
+    # Attempt to set OPENMUC_HOME
+    # Resolve links: $0 may be a link
+    PRG="$0"
+    # Need this for relative symlinks.
+    while [ -h "$PRG" ] ; do
+        ls=`ls -ld "$PRG"`
+        link=`expr "$ls" : '.*-> \(.*\)$'`
+        if expr "$link" : '/.*' > /dev/null; then
+            PRG="$link"
+        else
+            PRG=`dirname "$PRG"`"/$link"
+        fi
+    done
+    SAVED="`pwd`"
+    cd "`dirname \"$PRG\"`/.." >/dev/null
+    OPENMUC_HOME="`pwd -P`"
+    cd "$SAVED" >/dev/null
+}
+
+
+if [ -z ${OPENMUC_HOME+x} ]; then
+    find_openmuc_home
+fi
+cd "$OPENMUC_HOME"
+
+
+# If root change user to owner of this script
+if [ $UID -eq 0 ] ; then
+    SCRIPT_OWNER=`stat -c "%U" bin/openmuc`
+    echo "Executed as root, will run as owner of this script: $SCRIPT_OWNER"
+    if [ "$SCRIPT_OWNER" != "root" ] ; then
+        exec su $SCRIPT_OWNER  -- bin/openmuc "$@"
+    fi
+fi
+
+
+# Determine the Java command to use to start the JVM.
+if [ -n "$JAVA_HOME" ] ; then
+    if [ -x "$JAVA_HOME/jre/sh/java" ] ; then
+        # IBM's JDK on AIX uses strange locations for the executables
+        JAVACMD="$JAVA_HOME/jre/sh/java"
+    else
+        JAVACMD="$JAVA_HOME/bin/java"
+    fi
+    if [ ! -x "$JAVACMD" ] ; then
+        die "ERROR: JAVA_HOME is set to an invalid directory: $JAVA_HOME
+
+Please set the JAVA_HOME variable in your environment to match the
+location of your Java installation."
+    fi
+else
+    JAVACMD="java"
+    which java >/dev/null 2>&1 || die "ERROR: JAVA_HOME is not set and no 'java' command could be found in your PATH.
+
+Please set the JAVA_HOME variable in your environment to match the
+location of your Java installation."
+fi
+
+
+
+
+#
+# Function that stops the daemon/service
+#
+do_stop()
+{
+        # Return
+        #   0 if daemon has been stopped
+        #   1 if daemon was not running
+        #   2 if daemon could not be stopped (likely because kill level was too low)
+        #   3 if user has no right to stop the daemon
+
+    if [ ! -e $PID_FILE ]; then
+        return 1
+    fi
+
+    #TODO check if PID from file matches a java felix process
+
+    TMP_PID=`cat $PID_FILE`
+
+    if ! ps -p "${TMP_PID}" >/dev/null 2>&1;
+    then
+        rm -f $PID_FILE
+        return 1
+    fi
+    
+    if ! kill -0 "${TMP_PID}" >/dev/null 2>&1;
+    then
+        return 3
+    fi
+    
+    if [ "$2" = "-f" ]
+    then
+        kill -9 $TMP_PID >/dev/null 2>&1
+        RET_STATUS=$?
+    else
+        kill $TMP_PID >/dev/null 2>&1
+        RET_STATUS=$?
+    fi
+
+    if [ $RET_STATUS -ne 0 ]; then
+        return 2
+    fi
+
+
+    local i=0        
+        while kill -0 "${TMP_PID}" 2> /dev/null;  do
+            if [ $i = '5' ]; then
+                return 2
+            fi
+            echo -n "."
+            sleep 1
+            i=$(($i+1))
+        done
+
+    rm -f $PID_FILE
+    return 0
+}
+
+
+stop_openmuc() {
+    echo -n "Stopping OpenMUC"
+        do_stop
+    RET_STATUS=$?
+    echo ""
+        case "$RET_STATUS" in
+                0)
+            echo "done"
+                        exit 0
+                ;;
+                1)
+            echo "No OpenMUC process is running"
+                        exit 1
+                ;;
+                2)
+            echo "Unable to stop OpenMUC, try -f flag to kill by brute force"
+                        exit 2
+                ;;
+                3)
+            echo "Unable to stop OpenMUC, user has no permission to stop process."
+                        exit 3
+                ;;                        
+
+    esac
+}
+
+# Apache Felix FileInstall
+# Since FileInstall doesn't create the felix.fileinstall.dir by itself, this script creates
+# the folder. If the folder doesn't exist the org.apache.felix.fileinstall bundle will throw null pointer
+# exception at start.
+# The folder should be specified in system.properties e.g: felix.fileinstall.dir=conf/properties
+# If the property is missing then the default folder "load" for Felix FileInstall is created in "framework/load"
+create_felix_file_install_folder(){
+   
+    SYSPROP=$OPENMUC_HOME/conf/system.properties
+    FILE_INSTALL_KEY="felix.fileinstall.dir="
+    FILE_INSTALL_VALUE=`grep $FILE_INSTALL_KEY $SYSPROP | sed "s/${FILE_INSTALL_KEY}//g"`
+    FILE_INSTALL_FOLDER_DEFAULT=/load
+
+    # if FILE_INSTALL_VALUE exists in system.properties
+    if [ -n "$FILE_INSTALL_VALUE" ]; then
+
+        # check if string starts with / 
+        if [[ $FILE_INSTALL_VALUE =~ ^/ ]]; then
+            FILE_INSTALL_FOLDER=$OPENMUC_HOME$FILE_INSTALL_VALUE
+        else 
+            FILE_INSTALL_FOLDER=$OPENMUC_HOME"/"$FILE_INSTALL_VALUE
+        fi
+
+        # check if the folder already exists
+        if test -e "$FILE_INSTALL_FOLDER"; then
+           echo "Felix FileInstall folder already exists: $FILE_INSTALL_FOLDER"
+        else
+            # create folder if it doesn't exist
+            mkdir -p $FILE_INSTALL_FOLDER
+            if test -e "$FILE_INSTALL_FOLDER"; then
+               echo "Felix FileInstall folder created: $FILE_INSTALL_FOLDER"
+            else
+                echo "ERROR: unable to create Felix FileInstall $FILE_INSTALL_FOLDER. Try to create folder manually and start OpenMUC again."
+                exit 1
+            fi 
+        fi 
+    else
+        # create default Felix FileInstall folder "load"
+        mkdir -p $OPENMUC_HOME$FILE_INSTALL_FOLDER_DEFAULT        
+    fi  
+}
+
+
+
+start_openmuc() {
+   
+    create_felix_file_install_folder
+
+    #check bundle folder
+    if [ -z "$(ls -A $OPENMUC_HOME/bundle)" ]; then
+        echo "Bundle folder is empty, starting update-bundles."
+        eval $GRADLE -b $OPENMUC_HOME/conf/bundles.conf.gradle updateBundles --warning-mode all
+    fi
+
+    if [ -f $PID_FILE ]; then
+        if ps -p `cat $PID_FILE` > /dev/null
+        then
+            echo "OpenMUC is already running. Stop it first before running OpenMUC again."
+            exit 2
+        else
+            rm -f $PID_FILE
+        fi
+    fi
+
+    echo -e "\e[96m\e[1m$(cat $OPENMUC_HOME/bin/welcome.txt)\e[0m"
+
+    if [ "$2" != "-fg" ]
+    then
+        echo "Starting in background. To start OpenMUC in foreground run this script with the -fg flag."
+        # Option: -Dgosh.args=--nointeractive is necessary for running openmuc in background
+        exec "$JAVACMD" $JVM_OPTS -Dgosh.args=--nointeractive -jar "$OPENMUC_HOME"/felix/felix.jar >"$OPENMUC_HOME"/log/openmuc.out 2>&1 &
+    else
+        exec "$JAVACMD" $JVM_OPTS -jar "$OPENMUC_HOME"/felix/felix.jar
+    fi
+
+    if [ $? = 0 ]; then
+        # save PID of the openmuc background process
+        echo $! > $PID_FILE
+        exit 0;
+    else
+        exit 1;
+    fi
+    echo "done"
+}
+
+find_gradle() {
+#    if hash gradle 2>/dev/null; then
+#        GRADLE="gradle"
+#    else
+        GRADLE=$OPENMUC_HOME"/../gradlew"
+#    fi
+}
+
+PID_FILE=$OPENMUC_HOME/log/openmuc.pid
+find_gradle
+
+case "$1" in
+    start)
+        start_openmuc $*
+        ;;
+    stop)
+        stop_openmuc
+        ;;
+    restart)
+        stop_openmuc
+        sleep 10
+        start_openmuc $*
+        ;;
+    update-bundles)
+        STATUS=0
+        if [ "$2" = "-i" ]
+        then
+            $GRADLE -p $OPENMUC_HOME/../ publishMavenJavaPublicationToMavenLocal
+            STATUS=$?
+        elif [ "$2" = "-b" ]
+        then
+            cd $OPENMUC_HOME/..
+            $GRADLE jar check
+            STATUS=$?
+            cd $OPENMUC_HOME
+        elif [ "$2" = "-bx" ]
+        then
+            cd $OPENMUC_HOME/..
+            $GRADLE jar 
+            STATUS=$?
+            cd $OPENMUC_HOME
+        fi
+        if [ "$STATUS" = 0 ]
+        then
+          $GRADLE -b $OPENMUC_HOME/conf/bundles.conf.gradle updateBundles --warning-mode all
+          exit $?
+        else
+          echo "Skipping updating bundles because of pervious errors."
+          exit $STATUS
+        fi
+        ;;
+    remote-shell)
+        echo "Using telnet to connect to remote shell at 127.0.0.1:6666"
+        echo "Press ctrl+d to close connection"
+        exec telnet 127.0.0.1 6666
+        ;;
+    reload)
+        echo "reaload configuration"
+        { echo "openmuc:reload"; sleep 1; } | telnet localhost 6666
+        ;;
+    migrateh2)
+        eval $GRADLE -p $OPENMUC_HOME/../ :openmuc-datalogger-sql:migrateh2
+        ;;
+    *)
+        echo "Usage:" # openmuc {start|stop|restart|reload|update-bundles|remote-shell}"
+        echo "  openmuc start               Starts OpenMUC."
+        echo "  openmuc start -fg           Starts Openmuc in the foreground on the console."
+        echo ""
+        echo "  openmuc stop                Stops OpenMUC. If you started OpenMUC in the foreground you can press ctrl+d or enter “stop 0” to stop OpenMUC."
+        echo ""
+        echo "  openmuc restart             Stops OpenMUC and starts it again."
+        echo ""
+        echo "  openmuc reload              Reloads the configuration without restarting OpenMUC."
+        echo ""
+        echo "  openmuc update-bundles      Applies changes in bundles.conf.gradle to the /framework/bundle folder."
+        echo "  openmuc update-bundles -b   Rebuilds bundles if the source code was changed and applies them to the /framework/bundle folder."
+        echo "  openmuc update-bundles -bx  As above, but without running unit tests"
+        echo "  openmuc update-bundles -i   Updates the local Maven repository with the latest changes."
+        exit 1
+        ;;
+esac
+
+exit 0

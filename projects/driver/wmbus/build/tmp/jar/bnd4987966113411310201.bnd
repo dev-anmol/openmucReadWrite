@@ -1,0 +1,5 @@
+Bundle-SymbolicName=org.openmuc.framework.openmuc-driver-wmbus
+Bundle-Name=OpenMUC Driver - wM-Bus
+Bundle-Vendor=Fraunhofer ISE
+Bundle-ClassPath=.,lib/jmbus-3.3.0.jar,lib/jrxtx-1.0.1.jar
+Import-Package=\!org.openmuc.jmbus*,gnu.io,javax.crypto,javax.crypto.spec,*;version\=0

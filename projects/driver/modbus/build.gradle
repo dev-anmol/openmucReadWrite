@@ -1,0 +1,43 @@
+plugins {
+    id 'java' // Add Java plugin for Java projects
+    id 'biz.aQute.bnd.builder' // Add bnd plugin for OSGi support
+}
+
+def projectName = "OpenMUC Driver - Modbus"
+def projectDescription = "Modbus driver for the OpenMUC framework."
+
+// Define jarDefaultImportPackageVersion if not defined elsewhere
+ext {
+    jarDefaultImportPackageVersion = ';version=0' // Default to version 0 if needed, or adjust as appropriate
+}
+
+dependencies {
+    implementation project(':openmuc-core-spi')
+    implementation 'com.ghgande:j2mod:3.2.1' // Reference j2mod as a separate OSGi bundle
+    implementation 'com.fazecast:jSerialComm:2.10.4' // Ensure jSerialComm is available as a separate OSGi bundle
+    testImplementation group: "commons-codec", name: "commons-codec", version: commonsCodecVersion
+}
+
+jar {
+    bnd(
+        'Bundle-Name': projectName,
+        'Bundle-SymbolicName': 'org.openmuc.framework.driver.modbus', // Ensure this matches the OSGi symbolic name
+        'Bundle-Version': '0.20.1', // Match the version from configuration.gradle
+        'Bundle-ClassPath': '.', // Use only the root of the JAR since j2mod and jSerialComm are separate bundles
+        // 'Import-Package': 'com.ghgande.j2mod.modbus;version="[3.2.1]",com.ghgande.j2mod.modbus.io;version="[3.2.1]",com.ghgande.j2mod.modbus.procimg;version="[3.2.1]",com.ghgande.j2mod.modbus.util;version="[3.2.1]",com.fazecast.jSerialComm;version="[2.8.5]",!com.ghgande.j2mod*,!com.fazecast.jSerialComm;resolution:=optional,*' + jarDefaultImportPackageVersion,
+        'Import-Package': 'com.ghgande.j2mod.modbus;version="[3.2,4)",com.ghgande.j2mod.modbus.io;version="[3.2,4)",com.ghgande.j2mod.modbus.procimg;version="[3.2,4)",com.ghgande.j2mod.modbus.util;version="[3.2,4)",com.fazecast.jSerialComm;version="[2.10,3)",!com.ghgande.j2mod*,!com.fazecast.jSerialComm;resolution:=optional,*' + jarDefaultImportPackageVersion,
+        'Export-Package': 'org.openmuc.framework.driver.modbus;version="[0.20.0,1.0.0)",org.openmuc.framework.driver.modbus.tcp;version="[0.20.0,1.0.0)",org.openmuc.framework.driver.modbus.udp;version="[0.20.0,1.0.0)"'
+    )
+
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            pom {
+                name = projectName
+                description = projectDescription
+            }
+        }
+    }
+}

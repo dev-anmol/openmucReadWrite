@@ -1,0 +1,175 @@
+[[id_IEC61850_service]]
+== IEC 61850 Server
+
+The IEC 61850 service creates an IEC 61850 server with a mapping between OpenMUC and a specified IEC 61850 device.
+The mapping is done through
+_serverMapping_ in the _channels.xml_.
+The IEC 61850 service then sends the incoming data to the device whenever there is new data on the OpenMUC channel.
+
+Please note that the IEC 61850 attributes referenced in  _channels.xml_ need to match the server configuration, usually provided in a _.cid-file_ .
+
+.ServerSettings
+General settings of the IEC 61850 server are read from the file _framework/conf/properties/org.openmuc.framework.server.iec61850.server.Iec61850Server.cfg_ .
+The file is created with default settings if it does not exist.
+The below table shows the available settings:
+
+.ServerSettings
+
+.*Server settings*
+[width="100%",cols="2,1,1,1,4",options="header"]
+|=========================================================
+|Setting | Mandatory | Values | Default | Description
+
+|port| no | _string_ | 10003 | Port of the IEC 61850 device
+
+|sclPath| yes | _string_| _empty_ | scl Path of the .cid file used to specify the server structure
+
+|schedulingEnabled | no | _boolean_ | true | Enable IEC 61850 scheduling, see below for required channel definitions
+
+|=========================================================
+
+OpenMUC comes with a demo application preconfigured. A IEC61850 server including scheduling is included in this demo application.
+It has the following features:
+
+* Mapping of values into a IEC 61850 Server
+* Minimalistic Scheduling, based on IEC 61850-90-10
+
+
+=== Mapping of OpenMUC channels to server attributes
+
+A server usually provides measurement values. This is done using server mappings. Server mappings can be added to any channel.
+Let us for example look into the power_grid channel that is updated via CSV values and will update the IEC 61850 server as specified in the server mapping.
+
+.channels.xml
+[source,xml]
+----
+
+<channel id="power_grid">
+    <description>Grid Power</description>
+    <channelAddress>grid_power</channelAddress>
+    <unit>W</unit>
+    <samplingInterval>5s</samplingInterval>
+    <loggingInterval>5s</loggingInterval>
+    <serverMapping id="iec61850">IED_Controllable_DER/ActPow_GGIO1.AnOut1.mxVal.f:MX</serverMapping>
+    <!-- the above makes this measurement accessible on the IEC61850 server -->
+</channel>
+----
+
+==== Testing the server
+
+To observe the value changes, start up an IEC 61850 client, connect to your OpenMUC IEC 61850 demo application (defaults: 127.0.01, port: 10003)
+and navigate to attribute IED_Controllable_DER/ActPow_GGIO1.AnOut1.mxVal.f:MX to observer the changing values.
+
+:img-file: 61850-server-mapping.png
+image::{img-file}[title="OpenMUC Channels Access Tool Web view and IEC61850bean Client GUI showing grid power of -8313W",width="90%",link="{imagesdir}/{img-file}"]
+
+The link:https://www.beanit.com/iec-61850/[IEC 61850 bean library] includes a cli and gui client that is well suited for this purpose.
+
+[[id_IEC61850_scheduling]]
+=== Scheduling
+
+IEC61850-90-10 defines scheduling that is designed for resilience, allowing to schedule control ahead of time.
+This implementation is limited to time based control of several schedules according to their priority.
+This way, several control schedules that are active at a time can be merged into one as the picture below shows:
+
+:img-file: 61850-schedules.png
+image::{img-file}[title="Merging of several schedules according to their priorities to a result schedule",width="90%",link="{imagesdir}/{img-file}"]
+
+Before T=1, no schedule is active, so the output remains at 0*. At T=1, schedule 1 starts its execution. Since it is the only
+active schedule, it has highest priority and forwards its values to the controller output. At T=5, schedule 2 becomes active. It has
+higher priority as compared to schedule 1, so its values are forwarded to the controller as the result schedule.
+Schedules 3 and 4 have higher priority as schedule 2, so they overrule it during they are active from T=7...10 respective T=10..12.
+After T=14, no schedule is active, so the output goes to 0* again.
+
+_{empty}* this example assumes there is no custom reserve schedule active._
+
+*Supported features:*
+
+* supports several schedules with different priorities
+* supports several schedule controllers, allowing to control several output values
+* supports schedules with time precision of 1s (applies for both, interval and start)
+* supports reserve schedules that are always active
+
+*Limitations:*
+
+* reserve schedules must hold exactly 1 control value
+* only ASG (float/double) schedules were tested so far
+* schedule node behaviour is only implemented in a basic manner, only the output of the schedule controller is updated. References to the active schedule, the states of the schedules, etc... will not be updated as specified in IEC 61850-90-10.
+
+==== Configuration
+
+This server implements a very basic version of IEC 61850 scheduling. The logic is mostly abstracted, yet OpenMUC requires some minimal configuration effort.
+Again, the demo application has the minimal required channels preconfigured:
+
+.channels.xml
+[source,xml]
+----
+    <!-- general settings for ActPowSchedule -->
+    <device id="iec61850-schedule-controller">
+      <channel id="ActPowSchedule_FSCC1_SCHEDULE_CONTROLLER_OUTPUT">
+        <serverMapping id="iec61850">IED_Controllable_DER/ActPow_FSCC1.ValMV.mag.f:MX</serverMapping>
+      </channel>
+      <channel id="ActPowSchedule_FSCC1_RESERVE_SCHEDULE_VALUE">
+        <serverMapping id="iec61850">IED_Controllable_DER/ActPow_Res_FSCH01.ValASG001.setMag.f</serverMapping>
+      </channel>
+    </device>
+
+    <!-- Schedule1 enable and disable channels, belongs to ActPowSchedule schedule controller -->
+    <device id="iec61850-schedule1">
+      <channel id="ActPowSchedule_FSCH01_SCHEDULE_ENABLE">
+        <serverMapping id="iec61850">IED_Controllable_DER/ActPow_FSCH01.EnaReq.Oper.ctlVal:CO</serverMapping>
+        <valueType>BOOLEAN</valueType>
+      </channel>
+      <channel id="ActPowSchedule_FSCH01_SCHEDULE_DISABLE">
+        <serverMapping id="iec61850">IED_Controllable_DER/ActPow_FSCH01.DsaReq.Oper.ctlVal:CO</serverMapping>
+        <valueType>BOOLEAN</valueType>
+      </channel>
+    </device>
+
+    <!-- Schedule2 enable and disable channels, belongs to ActPowSchedule schedule controller -->
+    <device id="iec61850-schedule2">
+      <channel id="ActPowSchedule_FSCH02_SCHEDULE_ENABLE">
+        <serverMapping id="iec61850">IED_Controllable_DER/ActPow_FSCH02.EnaReq.Oper.ctlVal:CO</serverMapping>
+        <valueType>BOOLEAN</valueType>
+      </channel>
+      <channel id="ActPowSchedule_FSCH02_SCHEDULE_DISABLE">
+        <serverMapping id="iec61850">IED_Controllable_DER/ActPow_FSCH02.DsaReq.Oper.ctlVal:CO</serverMapping>
+        <valueType>BOOLEAN</valueType>
+      </channel>
+    </device>
+----
+
+The above example hints that the mappings follow a naming convention, as all server mappings start with "ActPowSchedule_",
+indicating that all schedules belong to the same schedule controller*:
+The naming convention is that the grouping to a schedule controller is done by OpenMUC channelId starts, until the first
+underscore ("\_"): In our example, all mappings belong to the "ActPowSchedule_"-group controlling the active power of the demo device.
+
+_{empty}* a schedule controller merges schedules according to their priority and forwards the control to a single target output_
+
+.*Schedule Server Mappings*
+[width="100%",cols="1,2,1,1,3",options="header"]
+|=========================================================
+|Mapping | Naming convention | Mapping target | Required |  Description
+
+| Schedule enable | channelId ends with  "SCHEDULE_ENABLE" | EnaReq.Oper.ctlVal:CO | 1 per schedule | References the enable "switch" of the schedule. Operating this node will read the required parameters (priority, start date, execution interval, control values) from the server and start execution the schedule
+
+| Schedule disable | channelId ends with  "SCHEDULE_DISABLE" | DsaReq.Oper.ctlVal:CO | 1 per schedule | References the disable "switch" of the schedule. Operating this node will stop execution the schedule
+
+| Controller output | channelId ends with "SCHEDULE_CONTROLLER_OUTPUT" | Output of the schedule controller | 1 per control group | The referenced node will be updated to hold the control value with of the schedule with the highest priority
+
+| Reserve schedule reference | channelId ends with "RESERVE_SCHEDULE_VALUE" | Control value of the reserve schedule | 0-1 per control group | Uses the specified value as default output for the schedule controller ("control group"). Defaults to control value of 0 if no schedule controller is specified.
+
+|=========================================================
+
+In order to add a new control target, e.g. reactive power, both the server configuration
+file _iec61850-server-example.cid_ and _channels.xml_ need to be modified. In the server configuration, a new schedule controller node and at least one schedule node need to be added.
+Then mappings to these nodes need to be added into _channels.xml_.
+
+==== Testing scheduling
+
+Testing scheduling can be done with any IEC 61850 client. In OpenMUC, link:https://www.beanit.com/iec-61850/[IEC 61850 bean library]
+is used, which implements both server and client. The _IEC61850ClientScheduleWriterExampleApp_ is shipped with the openmuc-server-iec61850 package
+and can be used as a example application create two overlapping schedules with different priorites that will be executed by the demo application:
+
+:img-file: 61850-demo-app.png
+image::{img-file}[title="Log during execution of tree schedules: reserve schedule with priority=10, ActPow_FSCH01 with priority=100 and ActPow_FSCH02 with priority=111.",width="90%",link="{imagesdir}/{img-file}"]

@@ -1,0 +1,476 @@
+v0.20.1 05-11-2024
+------------------
+- lib/driver/logger mqtt:
+  * add support for proxies
+- demo framework:
+  * fix compile errors in OpenMUC project download bundle
+
+v0.20.0 30-08-2024
+------------------
+- server IEC 61850:
+  * add new sever to make channels read- and writeable
+  * includes basic scheduling
+  * see user doc for more description
+- driver math:
+  * add new virtual driver to apply mathematical functions to values of other channels
+  * driver fully configurable via channels.xml
+  * see user doc for more description
+- updated H2 database version from 2.0.206 to 2.3.232. This was required because 2.0.206 is vulnerable.
+  Please manually update you database.
+- more dependency updates
+- driver eHZ:
+  * resolve symlinks to serial ports
+- driver modbus:
+  * changed from old j2mod to j2mod v3.2.1 (https://github.com/steveohara/j2mod)
+  * dependencies changed from jrxtx to jSerialComm v2.8.5 (http://fazecast.github.io/jSerialComm/)
+  * added UDP support
+  * fixed transaction identifier bug
+- driver mqtt:
+  * add retained messages
+  * add bug that occured on reconnect
+- driver amqp:
+  * add reconnectionInterval setting
+- driver iec60870:
+  * updated j60870 to v1.7.2
+- driver iec62056p21:
+  * updated j62056 to v2.2.0
+- driver csv:
+  * improve error handling on bad channel address
+- driver eHz
+  * remove jrxtx, needs to be added as external dependency in bundles.conf.gradle now
+  * handle linux symlinks properly
+- server modbus
+  * add modbus RTU
+  * use j2mod dependency
+- core:
+  * implement long missing hashCode and equals for Record and Value
+- java:
+  * update truststore
+
+v0.19.2 31-03-2022
+------------------
+- core:
+   * stop OpenMUC framework on parsing errors of channels.xml
+   * Bugfix: Channel RecordListeners are called again upon incomming values
+- logging:
+   * add file size based rollover, log files are now <= 100MB each
+- logback:
+   * update to 1.2.11 to fix log4j vulnerability
+- datalogger sql:
+   * migrate to h2 v2.0.206, added script for automatic migration
+   * Add backup/restore
+- gradle:
+   * updated to gradle 7.3.3
+   
+v0.19.1 16-12-2021
+------------------
+- logback:
+   * update to 1.2.8
+- gradle:
+   * updated to gradle 7.3
+- core:
+   * added getLatestLogRecord(..) to DataLoggerService
+   * added LoggingEvent for virtual driver
+- lib amqp:
+   * implemented buffer handling
+   * extended log messages for better feedback
+- lib osgi:
+   * some improvements
+- driver KNX:
+   * fix dependency
+- driver IEC 60870:
+   * fixed null pointer
+- driver mqtt
+   * fixed several bugs
+- driver amqp
+   * fixed several bugs
+- server restws:
+   * fixed exception if JSON is malformed
+- lib rest:
+   * added server mapping
+- lib ssl
+   * fixed several bugs
+- datalogger amqp:
+   * fixed several bugs
+- datalogger mqtt:
+   * fixed several bugs
+- datalogger sql:
+   * fixed wrong size of string values in data base
+   * changed database schema to table for every channel
+- Logback:
+   * changed to DailyRollbackAppender with compression
+- demo framework:
+   * osgi bundle updates
+
+v0.19.0 08-02-2021
+------------------
+- gradle:
+   * updated to gradle 6.7.1
+   * refactored gradle scripts
+- datamanager:
+   * added loggingSettings
+- lib osgi:
+   * library which handles the usage of OSGi concepts.
+   * support for property handling
+- lib rest1:
+   * new lib for reducing code duplication of rest driver and server
+- lib mqtt:
+   * added last will and testament support
+   * added first will support
+   * lib contains all dependencies for hive mq now
+- lib ssl:
+   * configurable via dynamic configuration now
+- datalogger MQTT
+   * fixed several bugs
+- datalogger AMQP
+   * fixed several bugs
+- datalogger SQL
+   * added new logger to support SQL databases
+- driver CSV
+   * added support for String values
+- driver DLMS
+   * updated to jDLMS v1.7.1
+- driver M-Bus:
+   * fixed wrong sorted channel bug
+- server Modbus:
+   * updates to j2mod v2.7.0
+   * added support for TCP/RTU and UDP
+   * changed server config to new dynamic osgi lib
+   * fixed NullPointerException
+   * fixed register not readable bug
+
+v0.18.1 29-Jul-2020
+-------------------
+- core:
+   * added optional channel settings
+- lib bundles:
+   * added lib-mqtt
+   * added lib-filePersistence
+- datalogger MQTT:
+   * added file buffering 
+- driver DLMS:
+   * fixed driver not configurable
+- driver AMQP:
+   * fixed parser bug
+- driver iec62056-21:
+   * fixed some device scan bugs
+- driver M-Bus:
+   * less strict device connection, strict mode is optional
+   * less errors if a single device has problems  
+- driver iec61850:
+   * updated to iec61850bean v1.9.0
+- demo framework:
+   * added channel settings example in simple demo app
+
+v0.18.0 23-Jun-2020
+-------------------
+- core:
+   * added parser service and lib bundle
+   * added getValueType() and string parser to OpenMUC Values
+- datamanager:
+   * extended SPI
+   * added new event logging (support depends on datalogger)
+- datalogger AMQP:
+   * added new amqp logger
+- datalogger MQTT:
+   * added new mqtt logger
+- lib bundles:
+   * added new lib bundles for parsing ,amqp and ssl
+- WebUI:
+   * Base
+      + added user role admin and non admin
+      + added option to set CORS functionality
+   * Live Plotter: 
+      + added configure x and y range
+- driver AMQP:
+   * added new amqp driver
+- driver IEC 61850:
+   * code refactoring
+   * some bug fixes
+   * added tests
+   * changes from OpenMUC OpenIEC61850 to beanit.com OpenIEC61850 v1.8.0
+- driver IEC 60870:
+   * updated j60870 to v1.4.0
+   * fixed C_SE_NC_1 bug
+- driver M-Bus: 
+   * added option for delay between every message (for slow devices)
+   * added multi telegram message in channel scan and read function
+   * updated jmbus to 3.3.0
+- driver wireless M-Bus
+   * updated jmbus to 3.3.0
+- driver DLMS:
+   * updated jDLMS to 1.7.0
+   * updated jASN1 to 1.10.0 
+- several bug fixes
+- extended documentation
+- osgi bundle updates
+
+v0.17.2 20-Dec-2018
+-------------------
+- WebUI:
+   * ChannelAccessTool: 
+      + new compact design
+   * Data Plotter:
+      + new zoom function
+      + new time picker with 12/24H switch
+   * Data Exporter:
+      + fixed exporter
+      + added new export formats
+      + new time picker with 12/24H switch
+   * ChannelConfigurator:
+      + added option for edit and delete several channels at once
+      + fixed bug adding several channels after scan
+   * fixed session timeout
+   * fixed several smaller bugs
+   * removed jQuery dependencies
+   * updated AngualarJS
+   * added SimpleDemoVisualisation as simple example for user apps
+- datamanager:
+   * fixed no error log message bug
+- datalogger Ascii:
+   * fixed err3 bug, when value is to long
+- driver M-Bus:
+   * added M-Bus over TCP
+   * updated jmbus to v3.2.0
+   * link reset only used if configured
+- driver wireless M-Bus:
+   * updated jmbus to v3.2.0
+- driver IEC 61850:
+   * updated openIEC61850 to v1.7.0
+   * fixed some data maping bugs
+- driver CSV:
+   * fixed empty channel bug
+- driver EHZ:
+   * updated jsml to 1.1.2
+- demo framework:
+   * updated osgi bundles
+- documentation:
+   * added CSV driver chapter
+   * added tutorial for application development
+   * added tutorial for WebUI application development
+   * reorgenized structure
+
+v0.17.1 16-Jul-2018
+-------------------
+- driver M-Bus:
+   * fixed NullPointerException when scan for channels
+   * fixed bug when scan device with secondary address
+   * fixed wrong ValueType after channel scan
+   * updated jmbus to v3.1.1
+   * added more channel/device scan description
+- driver wireless M-Bus:
+   * added wireless M-Bus over TCP
+   * updated jmbus to v3.1.1
+   * added more device/channel information after scan
+- driver dlms:
+   * updated jdlms to v1.6.0
+   * fixed bug when serial communication is used
+- driver rest:
+   * fixed some bugs
+   * reduced configuration overhead
+- updated jrxtx to v1.0.1
+- WebUI
+   * enable config of contextpath 
+   * added unit to channel scan
+   * fixed changing user PW. Thanks to B. Kruger
+   * minor fixes
+
+v0.17.0 27-Feb-2018
+-------------------
+- OpenMUC now requires Java 1.8 instead of Java 1.7
+- driver Modbus:
+   * changed to j2mod
+   * added Modbus RTU over TCP
+   * fixed bugs
+   * new debug messages
+   * supports more data types
+   * replaced int and short with int16, int32, uint16 and uint32
+- driver IEC 60870:
+   * added writing
+   * more supported data types 
+   * in sampling/read mode only general interrogation command is possible, yet
+- driver EHZ:
+   * can read FNN Basiszaehler "INFO" interface
+   * updated libraries
+   * added scan progress
+   * added listening
+- driver DLMS:
+   * updated to new jDLMS
+   * complete refactoring
+   * supports:
+      + more data types
+      + read, write and channel scanning
+      + HLS5 authentication
+      + AES encryption
+      + TCP wrapper
+      + HDLC with serial and TCP communication
+      + LN and SN referencing
+- driver M-Bus / wireless M-Bus:
+   * changed OpenMUC value type to DoubleValue by M-Bus date value type
+- driver IEC 62056:
+   * custom request message possible
+   * added option for reading standard and manufacture specific at "once"
+   * added read retries 
+- REST API:
+   * authentication is mandatory also in HTTP
+   * added get single record field
+   * added get driverId and deviceId from channel
+- WebUI:
+   * plotter: can plot timeseries
+   * channel configurator:
+      + added channel address information in "edit" and "new channel"
+      + fixed "only integer is possible" in set scaling factor
+   * base:
+      + fixed bugs in authentication if username changed
+   * channel access tool:
+      + adds set record button
+- updated OSGi bundles
+- updated libraries of mostly all driver
+- added Modbus server
+- several fixes in Asciilogger, OpenMUC-Core, ...
+
+v0.16.0 10-Oct-2016
+-------------------
+- Demo Framework:
+   * Added sophisticated run script for Linux/Unix that enables start,
+     stop, reload etc.
+   * moved all configuration files to "conf" folder
+   * Sample app moved to main projects folder
+   * Dummy driver replaced by general CSV driver
+- Several smaller improvements to WebUI and REST server for more
+  convenience and better performance
+- M-Bus driver now support secondary address reading
+- Modbus driver: added support for RTU over TCP
+- components.xml of several projects is now generated automatically from
+  annotations
+- Various minor fixes. Among others to the KNX driver (thanks to
+  Daniel Lechner) and the SNMP driver (thanks to Epfianio Ticona).
+
+v0.15.3 11-Jan-2016
+-------------------
+- fixed various issues in web UI
+- updated M-Bus driver
+- fixed issues in ASCII Logger
+
+v0.15.2 13-Aug-2015
+-------------------
+- added more thorough information on licenses of third-party
+  dependencies
+- minor bug fixes in aggregator and DLMS/COSEM driver
+- updated some felix OSGI framework bundles
+
+v0.15.1 22-Jul-2015
+-------------------
+- fixes bug building and running OpenMUC on Windows
+- fixes in ASCII Logger, aggregator driver, knx driver and rest driver
+- removed CANopen driver because it cannot be supported at the moment
+
+v0.15.0 03-Jul-2015
+-------------------
+- complete rewrite of the Web UI, it is now based on Angular JS,
+  Velocity is no longer needed, it is reponsive so it looks well on
+  smart phones and tablets
+- the REST server now supports: channel scan, changing the
+  configuration, basic authentication over TLS/SSL
+- OpenMUC now requires Java 1.7 instead of Java 1.6
+- added new aggregator driver that be used to easily log average
+  values
+- added REST driver that can access other OpenMUC devices that have a
+  REST server
+- improved ASCII logger
+
+v0.14.0 24-Feb-2015
+-------------------
+- added wirless M-Bus driver
+- modified driver API
+- improved REST server
+- some bug fixes in ASCII logger
+
+v0.13.1 17-Oct-2014
+-------------------
+- improvements to some drivers (M-Bus, IEC 62056-21 Modbus RTU)
+- minor fixes in demo app and driver
+- javadoc can now be created  with java8 doclint
+- if the system time jumps significantly then tasks are now omitted
+  and rescheduled
+
+v0.13.0 08-Sep-2014
+-------------------
+- changed license from LGPLv2.1 to GPLv3, OpenMUC can be bought under
+  an individual license
+- added drivers: CANopen, IEC 62056-21, Siemens S7, SNMP
+- Modbus driver now support RTU also
+- many improvements to existing drivers
+- scanning for devices and channels is possible with several drivers now
+- many improvements in ChannelConfigurator and other WebUI bundles
+- the configuration syntax was changed, e.g. drivers, devices and
+  channels all have IDs now
+- ASCII Logger improved
+- improved REST Server: more capabilities + dependecies removed
+- introduced Server API
+- many smaller bug fixes
+- improved documentation
+
+v0.12.3 01-Aug-2013
+-------------------
+- the M-Bus driver was fit to the new driver service interface and is
+  now part of the distribution again
+- fix in build file to include rxtx dependency, rxtx-comm was replaced
+  by newest version
+- fixed some bugs when dynamically reconfiguring OpenMUC
+- DLMS driver can now write
+- RestWS uses more light weight Jackson-Core
+- ChannelAccessTool was improved
+- scanning for devices and channels was improved
+
+v0.12.1 19-Jun-2013
+-------------------
+- use of SSL for WebUI and REST server documented
+- log source and log sink interfaces were combined
+- data logger that is used as log source is now selectable via configuration
+- channel scan possible via channel configuration webui
+- Channel.read() function implemented
+- second live plotter was added to WebUI for better performance
+- lots of smaller bug fixes
+
+v0.12.0 17-May-2013
+-------------------
+- Modified DriverInterface to ease driver development:
+  - connections
+  - sampling (using blocking read function) listening (using non-blocking startListeningFor function)
+- Configuration Interface:
+  - Copy of a configuration can be edited and then committed to the framework
+  - added driver config layer, now there are three layers: driver, device and channel
+  - introduced read & connect timeouts
+  - disabling of devices and channels is possible, disabling turns of sampling, listening & logging
+  - introduced channelID in addition to label so that the label can be changed later on
+- DataAccessInterface (formerly DataManager):
+  - Reading & writing several channels at one is possible
+- Value Interface can be Double, Long, ByteString etc.
+- Added DemoApp & DummyDriver to ease learning to develop for OpenMUC
+- replaced Equinox in the demo by Apache Felix because it is better suited for console use and better documented
+- Changed all framework bundles to use Declarative Services
+- added RESTful Web Service Server
+- added some drivers: IEC61850, DLMS/COSEM, KNX, ModbusTCP
+- other drivers such as M-Bus are temporarily removed, they still have to be adjusted to the new driver interface
+
+v0.10.1 11-Sep-2012
+-------------------
+- fixed some junit bugs when running them on Windows
+
+v0.10.0 23-Apr-2012
+-------------------
+- this is just a bugfix release
+- all web interface plugins now work with gradle
+- the new version sheme is X.Y.Z where X is the main version, Y is a version with new features and Z is a minor bugfix release number.
+
+
+v0.9.5 10-Apr-2012
+------------------
+- changed build system to gradle
+- numerous bug fixed
+- refactoring
+
+v0.9.0 28-Mar-2011
+------------------
+- first version

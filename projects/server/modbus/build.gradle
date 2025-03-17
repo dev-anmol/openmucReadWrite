@@ -1,0 +1,38 @@
+def projectName = "OpenMUC Server - Modbus"
+def projectDescription = "Modbus server for the OpenMUC framework."
+
+configurations.create('embed')
+
+dependencies {
+    implementation project(':openmuc-core-api')
+    implementation project(':openmuc-core-spi')
+    implementation project(':openmuc-lib-osgi')
+
+    implementation group: 'org.osgi', name: 'org.osgi.service.cm', version: osgiServiceCmVersion
+
+    implementation group: 'com.ghgande', name: 'j2mod', version: j2modVersion
+    embed group: 'com.ghgande', name: 'j2mod', version: j2modVersion
+}
+
+jar {
+    bnd('Bundle-Name': projectName,
+            'Bundle-ClassPath': '.,lib/j2mod-' + j2modVersion + '.jar',
+            'Import-Package': '!com.ghgande.j2mod*,gnu.io;resolution:=optional,com.fazecast*;resolution:=optional, *' + jarDefaultImportPackageVersion)
+
+    into('lib') {
+        from configurations.embed
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            pom {
+                name = projectName
+                description = projectDescription
+            }
+        }
+    }
+}
+
+

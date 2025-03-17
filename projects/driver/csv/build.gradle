@@ -1,0 +1,39 @@
+def projectName = "OpenMUC Driver - CSV"
+def projectDescription = "CSV driver for the OpenMUC framework."
+
+def univocityVersion = '2.9.1'
+
+configurations.create('embed')
+
+dependencies {
+
+    implementation project(':openmuc-core-datamanager')
+
+    implementation project(':openmuc-core-spi')
+
+    implementation group: 'com.univocity', name: 'univocity-parsers', version: univocityVersion
+    embed group: 'com.univocity', name: 'univocity-parsers', version: univocityVersion
+
+    testImplementation project(':openmuc-core-datamanager').sourceSets.test.output
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: mockitoVersion
+}
+
+jar {
+    bnd('Bundle-Name': projectName, 'Bundle-ClassPath': '.,lib/univocity-parsers-' + univocityVersion + '.jar',
+            'Import-Package': '!com.univocity.parsers.*,!com.googlecode.openbeans.*,*' + jarDefaultImportPackageVersion)
+
+    into('lib') {
+        from configurations.embed
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            pom {
+                name = projectName
+                description = projectDescription
+            }
+        }
+    }
+}

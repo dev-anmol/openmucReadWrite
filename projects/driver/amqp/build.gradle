@@ -1,0 +1,24 @@
+def projectName = "OpenMUC Driver - AMQP"
+def projectDescription = "AMQP driver for the OpenMUC framework."
+dependencies {
+    implementation project(':openmuc-core-spi')
+    implementation project(':openmuc-lib-amqp')
+    implementation project(':openmuc-lib-osgi')
+
+    testImplementation group: 'com.rabbitmq', name: 'amqp-client', version: '5.21.0'
+}
+
+jar {
+    bnd('Bundle-Name': projectName)
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            pom {
+                name = projectName
+                description = projectDescription
+            }
+        }
+    }
+}

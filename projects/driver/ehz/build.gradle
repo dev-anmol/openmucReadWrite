@@ -1,0 +1,33 @@
+def projectName = "OpenMUC Driver - eHZ"
+def projectDescription = "eHZ driver for the OpenMUC framework."
+
+configurations.create('embed')
+
+dependencies {
+    implementation project(':openmuc-core-spi')
+
+    implementation group: 'org.openmuc', name: 'jrxtx', version: jrxtxversion
+    implementation group: 'org.openmuc', name: 'jsml', version: jsmlversion
+    embed group: 'org.openmuc', name: 'jsml', version: jsmlversion
+}
+
+jar {
+    bnd('Bundle-Name': projectName,
+            'Bundle-ClassPath': '.,lib/jsml-' + jsmlversion + '.jar',
+            'Import-Package': '!org.openmuc.jsml*,*' + jarDefaultImportPackageVersion)
+
+    into('lib') {
+        from configurations.embed
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            pom {
+                name = projectName
+                description = projectDescription
+            }
+        }
+    }
+}

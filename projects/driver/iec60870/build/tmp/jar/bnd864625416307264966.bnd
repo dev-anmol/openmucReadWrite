@@ -1,0 +1,5 @@
+Bundle-SymbolicName=org.openmuc.framework.openmuc-driver-iec60870
+Bundle-Name=OpenMUC Driver - IEC 60870-5-104
+Bundle-Vendor=Fraunhofer ISE
+Bundle-ClassPath=.,lib/j60870-1.7.2.jar
+Import-Package=\!org.openmuc.j60870*,javax.net,*;version\=0

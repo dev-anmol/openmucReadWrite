@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<configuration>
+    <driver id="math">
+        <device id="calc1">
+            <channel id="timestamp_averaging_channel">
+                <description>difference of channels Const_5 and Const_3</description>
+                <channelAddress>§Const_5§-§Const_3§</channelAddress>
+                <samplingInterval>1s</samplingInterval>
+                <settings>math-ts-strategy=use_average_timestamp</settings>
+            </channel>
+
+            <channel id="timestamp_newer_channel">
+                <description>difference of channels Const_5 and Const_3</description>
+                <channelAddress>§Const_5§-§Const_3§</channelAddress>
+                <samplingInterval>1s</samplingInterval>
+                <settings>math-ts-strategy=use_newer_timestamp</settings>
+            </channel>
+
+            <channel id="timestamp_older_channel">
+                <description>difference of channels Const_5 and Const_3</description>
+                <channelAddress>§Const_5§-§Const_3§</channelAddress>
+                <samplingInterval>1s</samplingInterval>
+                <settings>math-ts-strategy=use_older_timestamp;this-setting-is-ignored</settings>
+            </channel>
+
+            <channel id="timestamp_older_channel2">
+                <description>difference of channels Const_5 and Const_3</description>
+                <channelAddress>§Const_5§-§Const_3§</channelAddress>
+                <samplingInterval>1s</samplingInterval>
+                <settings>setting1;setting4;math-ts-strategy=use_older_timestamp;some-other-setting</settings>
+            </channel>
+
+            <channel id="timestamp_no_settings">
+                <description>difference of channels Const_5 and Const_3</description>
+                <channelAddress>§Const_5§-§Const_3§</channelAddress>
+                <samplingInterval>1s</samplingInterval>
+            </channel>
+        </device>
+    </driver>
+
+    <!-- dummy channels -->
+    <driver id="virtual">
+        <device id="virtual">
+            <channel id="Const_5">
+            </channel>
+            <channel id="Const_3">
+            </channel>
+        </device>
+    </driver>
+</configuration>

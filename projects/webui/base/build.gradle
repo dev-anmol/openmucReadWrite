@@ -1,0 +1,32 @@
+def projectName = "OpenMUC WebUI - Base"
+def projectDescription = "WebUI base for the OpenMUC framework."
+
+configurations.create('embed')
+
+dependencies {
+    implementation project(':openmuc-core-api')
+    implementation project(':openmuc-webui-spi')
+    implementation group: 'com.google.code.gson', name: 'gson', version: gsonVersion
+    embed group: 'com.google.code.gson', name: 'gson', version: gsonVersion
+    implementation group: 'org.apache.felix', name: 'org.apache.felix.http.servlet-api', version: apacheFelixServletVersion
+}
+
+jar {
+    bnd('Bundle-Name': projectName, 'Bundle-ClassPath': '.,lib/gson-' + gsonVersion + '.jar',
+            'Import-Package': '!com.google.gson.*,*' + jarDefaultImportPackageVersion
+    )
+
+    into('lib') {
+        from configurations.embed
+    }
+}
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            pom {
+                name = projectName
+                description = projectDescription
+            }
+        }
+    }
+}

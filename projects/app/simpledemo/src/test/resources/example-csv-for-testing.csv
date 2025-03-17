@@ -1,0 +1,4 @@
+YYYYMMDD,hhmmss,unixtimestamp,gride_energy_import,grid_energy_export,grid_power,ev_energy_consumption_,ev_power_consumption,pv_energy_production,pv_power_production,hp_energy_consumption,hp_power_consumption
+20150708,000000,1436306400000,         0,                  0,          0,                     0,                   0,                   0,                  0,                    0,                  0
+20150708,000005,1436306405000,         0,                  0,          1,                     0,                   0,                   0,                  0,                    0,                  0
+20150708,000010,1436306410000,         0,                  0,          2,                     0,                   0,                   0,                  5,                    0,                  0

@@ -1,0 +1,95 @@
+
+[[id_modbus_service]]
+== Modbus Server
+
+The modus service allows you to access to a OpenMUC channel by ModbusTCP protocol.
+For accessing a channel through Modbus the channel has to be mapped with _serverMapping_ and the Modbus Server bundle has to copied in the bundle folder.
+
+ServerMapping ID: _modbus_
+
+.serverMapping
+[width="100%",cols="1,^v,^v,^v,^v,^v,^v,^v",options="header"]
+|=========================================================
+| Primary Table | BOOLEAN | SHORT   | INT | FLOAT   | DOUBLE | LONG | BYTEARRAY[n]
+
+| INPUT_REGISTER | x | x | x | x | x | x | -
+| HOLDING_REGISTERS | x | x | x | x | x | x | -
+|=========================================================
+
+DISCRETE_INPUTS and COIL are not supported yet.
+
+.Server Settings
+Server settings are done in the _load/org.openmuc.framework.server.modbus.ModbusServer.cfg_.
+
+.*Server settings*
+[width="100%",cols="2,1,1,1,4",options="header"]
+|=========================================================
+|Setting | Mandatory | Values | Default | Description
+
+|address| no | _string_ | 127.0.0.1 | IP address to listen on
+
+|poolsize| no | _int_ | 3 | Listener thread pool size, only has affects with TCP and RTUTCP
+
+|port| no | _int_ | 502 | Port to listen on
+
+|unitId| no | _int_| 15 | UnitId of the slave
+
+|type| no | _string_| tcp | Connection type (TCP, RTUTCP or UDP)
+|=========================================================
+
+If you run ModbusTCP Server without root-privileges you have to allow Felix to bind Port 502 with setcap.
+
+.Console e.g. bash
+[source,bash]
+----
+
+setcap 'cap_net_bind_service=+ep' /path/to/program
+
+----
+
+=== Example ===
+
+.channels.xml
+[source,xml]
+----
+
+<?xml version="1.0" encoding="UTF-8" standalone="no"?> <configuration>
+
+  <driver id="virtual">
+    <device id="sample_device">
+
+      <channel id="sample_channel_1">
+        <serverMapping id="modbus">HOLDING_REGISTERS:1000:INTEGER</serverMapping>
+        <valueType>INTEGER</valueType>
+      </channel>
+
+      <channel id="sample_channel_2">
+        <serverMapping id="modbus">HOLDING_REGISTERS:1002:BOOLEAN</serverMapping>
+        <valueType>BOOLEAN</valueType>
+      </channel>
+
+      <channel id="sample_channel_3">
+        <serverMapping id="modbus">INPUT_REGISTERS:1000:DOUBLE</serverMapping>
+      </channel>
+
+      <channel id="sample_channel_4">
+        <serverMapping id="modbus">INPUT_REGISTERS:1004:LONG</serverMapping>
+        <valueType>LONG</valueType>
+      </channel>
+
+    </device>
+  </driver>
+
+</configuration>
+
+----
+
+.properties/org.openmuc.framework.server.modbus.ModbusServer.cfg
+[source,properties]
+----
+
+# (Optional) Port to listen on
+port=5502
+# (Optional) IP address to listen on
+
+address=127.0.0.1 # (Optional) UnitId of the slave unitId=1 # (Optional) Listener thread pool size, only has affects with TCP and RTUTCP poolsize=3 # (Optional) Connection type, could be TCP, RTUTCP or UDP type=tcp

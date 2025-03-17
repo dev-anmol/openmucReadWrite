@@ -1,0 +1,4 @@
+Export-Package=org.openmuc.framework.*
+Bundle-SymbolicName=org.openmuc.framework.openmuc-core-spi
+Bundle-Name=OpenMUC Core - SPI
+Bundle-Vendor=Fraunhofer ISE

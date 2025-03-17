@@ -1,0 +1,7 @@
+Export-Package=org.openmuc.framework.driver.modbus;version\="[0.20.0,1.0.0)",org.openmuc.framework.driver.modbus.tcp;version\="[0.20.0,1.0.0)",org.openmuc.framework.driver.modbus.udp;version\="[0.20.0,1.0.0)"
+Bundle-SymbolicName=org.openmuc.framework.driver.modbus
+Bundle-Version=0.20.1
+Bundle-Name=OpenMUC Driver - Modbus
+Bundle-Vendor=Fraunhofer ISE
+Bundle-ClassPath=.
+Import-Package=com.ghgande.j2mod.modbus;version\="[3.2,4)",com.ghgande.j2mod.modbus.io;version\="[3.2,4)",com.ghgande.j2mod.modbus.procimg;version\="[3.2,4)",com.ghgande.j2mod.modbus.util;version\="[3.2,4)",com.fazecast.jSerialComm;version\="[2.10,3)",\!com.ghgande.j2mod*,\!com.fazecast.jSerialComm;resolution\:\=optional,*;version\=0

@@ -1,0 +1,5 @@
+Bundle-SymbolicName=org.openmuc.framework.openmuc-driver-math
+Bundle-Name=OpenMUC Driver - Math
+Bundle-Vendor=Fraunhofer ISE
+Bundle-ClassPath=.,lib/javaluator-3.0.4.jar
+Import-Package=\!com.fathzer.javaluator*,*;version\=0

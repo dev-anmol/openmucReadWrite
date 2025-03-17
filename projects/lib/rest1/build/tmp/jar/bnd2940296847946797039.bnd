@@ -1,0 +1,5 @@
+Export-Package=org.openmuc.framework.lib.rest1.*,com.google.*
+Bundle-SymbolicName=org.openmuc.framework.openmuc-lib-rest1
+Bundle-Name=OpenMUC Library - REST/JSON v1.0
+Bundle-Vendor=Fraunhofer ISE
+Bundle-ClassPath=.,lib/gson-2.8.9.jar

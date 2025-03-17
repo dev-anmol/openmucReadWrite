@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<configuration>
+
+    <driver id="math">
+        <device id="Meter_01">
+            <!-- channel which represents the measured power value from the meter -->
+            <channel id="Meter_01_p_tot">
+                <channelAddress>§Meter_01_raw_p_tot_mant§*(10^§Meter_01_raw_p_tot_exp)§</channelAddress>
+                <samplingInterval>1s</samplingInterval>
+                <loggingInterval>5s</loggingInterval>
+                <unit>W</unit>
+            </channel>
+        </device>
+    </driver>
+
+
+    <driver id="csv">
+        <samplingTimeout>995ms</samplingTimeout>
+        <device id="Meter_01_raw">
+            <settings>samplingmode=line;rewind=true</settings>
+            <connectRetryInterval>20s</connectRetryInterval>
+            <deviceAddress>src/test/resources/mantissaExponent.csv</deviceAddress>
+
+            <channel id="Meter_01_raw_p_tot_mant">
+                <channelAddress>Meter_01_raw_p_tot_mant</channelAddress>
+                <samplingInterval>1s</samplingInterval>
+            </channel>
+            <channel id="Meter_01_raw_p_tot_exp">
+                <channelAddress>Meter_01_raw_p_tot_exp</channelAddress>
+                <samplingInterval>1s</samplingInterval>
+            </channel>
+        </device>
+    </driver>
+
+</configuration>

@@ -1,0 +1,5 @@
+Bundle-SymbolicName=org.openmuc.framework.openmuc-driver-csv
+Bundle-Name=OpenMUC Driver - CSV
+Bundle-Vendor=Fraunhofer ISE
+Bundle-ClassPath=.,lib/univocity-parsers-2.9.1.jar
+Import-Package=\!com.univocity.parsers.*,\!com.googlecode.openbeans.*,*;version\=0

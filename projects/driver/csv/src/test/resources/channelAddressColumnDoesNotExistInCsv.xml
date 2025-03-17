@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<configuration>
+
+    <driver id="csv">
+        <samplingTimeout>10s</samplingTimeout>
+        <connectRetryInterval>1m</connectRetryInterval>
+        <device id="home1">
+            <description/>
+            <deviceAddress>./src/test/resources/home1.csv</deviceAddress>
+            <settings>samplingmode=hhmmss;rewind=true</settings>
+            <channel id="hhmmss">
+                <description>hhmmss</description>
+                <channelAddress>this-column-does-not-exist</channelAddress>
+                <samplingInterval>100ms</samplingInterval>
+            </channel>
+
+        </device>
+    </driver>
+
+</configuration>

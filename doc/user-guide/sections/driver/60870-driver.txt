@@ -1,0 +1,75 @@
+=== IEC 60870-5-104
+
+IEC 60870-5-104 is an international communication standard for telecontrol.
+The IEC 60870-5-104 driver uses the library from the j60870 project. +
+The driver is able to send general interrogation commands for sampling. For writing
+almost all commands are possible.
+
+[{config_table}]
+[{driver_table_op}, cols="1,4"]
+|=========================================================
+|ID | iec60870
+|Device Address |  [ca=<common_address>] [;p=<port>] [;h=<host_address>]
+|Settings | [mft=<message_fragment_timeout>] [;cfl=<cot_field_length>]
+[;cafl=<common_address_field_length>] [;ifl=<ioa_field_length>]
+ [;mtnar=<max_time_no_ack_received>] [;mtnas=<max_time_no_ack_sent>]
+ [;mit=<max_idle_time>] [;mupr=<max_unconfirmed_ipdus_received>]
+  [;sct=<stardt_con_timeout>]
+|Channel Address | ca=<common_address>; t=<type_id>; ioa=<ioa>
+[;dt=<data_type>] [;i=<index>] [;m=<multiple>]
+|=========================================================
+
+All options are separated by a semicolon.
+
+*Device Address*
+
+ca=<common_address> : Common address
+p=<port> : Port of the server / controlled station
+h=<host_address> : Host address of the server / controlled station
+
+*Settings*
+
+mft=<message_fragment_timeout> : Message fragment timeout, SO_Timeout (default: 5.000 ms)
+
+cfl=<cot_field_length> : Cause Of Transmission (CoT) field length. (default: 2)
+cafl=<common_address_field_length> : Common Address (CA) field length. (default: 2)
+ifl=<ioa_field_length> : Information Object Address (IOA) field length. (default: 3)
+
+cont=<connection_timeout>: Connection timeout t0. (default: 30.000 ms)
+mtnar=<max_time_no_ack_received> Time-out (t1) of send or test APDUs (default: 15.000 ms)
+mtnas=<max_time_no_ack_sent> : Time-out for acknowledges in case of no data messages t2 < t1 (default: 10.000 ms)
+mit=<max_idle_time> :  Time-out for sending test frames in case of a long idle state, t3. (default: 20.000 ms)
+
+mupr=<max_unconfirmed_ipdus_received> : Sets the number of unacknowledged I format APDUs received before the connection will automatically send an S format APDU to confirm them. This parameter is called w by the standard. Default is 8, minimum is 1, maximum is 32767. (default: 8)
+mnoi=<max_num_of_outstanding_ipdus> : Sets the number of maximum difference send sequence number to send acknowledge variable before Connection.send will block. This parameter is called k by the standard. Default is 12, minimum is 1, maximum is 32767. (default: 12)
+
+at=<allowed_types> : List of IDs (integer) of allowed ASduTypes. e.g. 1,10,36 for M_SP_NA_1(1), M_ME_TA_1(10) and  M_ME_TF_1(36) (default: all allowed )
+
+*Channel Address*
+
+Mandatory options are _Common Address_, _Type ID_ and _Information Object Address_.
+
+It is possible to get a single value of a Sequence Information Element, for this
+you can define _Index_ of the needed element. The first element is 0, the second 1, ...
+
+For reading values which are divided in multiple elements it can be defined how many
+elements should be read as one. e.g. _i=0;m=4_ says it reads from the first element
+up to the fourth element, of a sequence. This is only allowed for _Binary State Information_.
+
+With the option _Data Type_ it is possible to get a single quality flag.
+
+[{driver_table_op}, cols="1,4"]
+|=========================================================
+| Data Type | Description
+| v | value (default)
+| ts | timestamp
+| iv | in/valid
+| nt | not topical
+| sb | substituted
+| bl | blocked
+| ov | overflow
+| ei | elapsed time invalid
+| ca | counter was adjusted since last reading
+| cy | counter overflow occurred in the
+|=========================================================
+

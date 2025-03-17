@@ -1,0 +1,27 @@
+def projectName = "OpenMUC Core - API"
+
+
+dependencies {
+    api group: 'org.osgi', name: 'osgi.core', version: '8.0.0'
+    api group: 'org.apache.felix', name: 'org.apache.felix.scr', version: '2.2.0'
+    api group: 'org.osgi', name: 'org.osgi.service.component.annotations', version: '1.5.1'
+    api group: 'org.osgi', name: 'org.osgi.service.http', version: '1.2.2'
+
+
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params' ,version: junitVersion
+}
+
+jar {
+    bnd('Bundle-Name': projectName, 'Export-Package': 'org.openmuc.framework.*, !org.apache.*')
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            pom {
+                name = projectName
+                description = "The core API of the OpenMUC framework."
+            }
+        }
+    }
+}

@@ -1,0 +1,107 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+}
+
+plugins {
+    id 'biz.aQute.bnd.builder' version '6.4.0'
+    id 'org.asciidoctor.jvm.pdf' version '4.0.3' apply false
+    id 'org.asciidoctor.jvm.convert' version '4.0.3' apply false
+    id 'java-library'
+    id 'jacoco'
+    id 'org.sonarqube' version '3.0'
+    id 'com.github.jk1.dependency-license-report' version '2.9'
+}
+
+project.tasks["sonarqube"].dependsOn "test"
+project.ext {
+    jarDefaultImportPackageVersion = ";version=0"
+}
+
+repositories {
+    jcenter()
+}
+
+apply from: "configuration.gradle"
+
+def internalFolder = 'gradle/develop/'
+def folder = new File(internalFolder)
+
+if (folder.exists()) {
+    apply from: internalFolder + "ascii.gradle"
+    apply from: internalFolder + "jacoco.gradle"
+    apply from: internalFolder + "extensions.gradle"
+    apply from: internalFolder + "release.gradle"
+    apply from: internalFolder + "dependency-license-check.gradle"
+}
+
+configure(subprojects) {
+
+    apply plugin: "java-library"
+    apply plugin: "eclipse"
+    apply plugin: "idea"
+    apply plugin: "biz.aQute.bnd.builder"
+    apply plugin: "jacoco"
+    apply plugin: "maven-publish"
+
+    group = cfgGroup
+    sourceCompatibility = "1.8"
+    targetCompatibility = "1.8"
+
+    if (!project.properties.containsKey('cfgJavaVersion')) {
+        project.ext {
+            cfgJavaVersion = '1.11'
+        }
+    }
+    repositories {
+        mavenCentral()
+    }
+
+    compileJava {
+        options.compilerArgs << '-Xlint:unchecked'
+        options.compilerArgs << '-Xlint:deprecation'
+    }
+
+    sourceSets {
+        sample
+        itest {
+            compileClasspath += sourceSets.main.runtimeClasspath
+        }
+    }
+
+    // commonly used dependency versions are stored in file configuration.gradle
+    dependencies {
+        // testing
+        testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junitVersion
+        testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junitVersion
+
+        // logging
+        implementation group: 'org.slf4j', name: 'slf4j-api', version: slf4jApiVersion
+        implementation group: 'ch.qos.logback', name: 'logback-core', version: logbackVersion
+        implementation group: 'ch.qos.logback', name: 'logback-classic', version: logbackVersion
+    }
+
+    jar {
+        bnd('Bundle-Name': project.name,
+                'Bundle-Vendor': 'Fraunhofer ISE',
+                'Bundle-SymbolicName': project.group + '.' + project.name)
+
+        destinationDirectory = new File("$rootDir/build/libs-all")
+    }
+
+    test {
+        useJUnitPlatform{
+            excludeTags 'demoConfigTest'
+        }
+        finalizedBy jacocoTestReport
+    }
+
+    eclipse.pathVariables([GRADLE_USER_HOME: file(gradle.gradleUserHomeDir)])
+    tasks.eclipse.dependsOn(cleanEclipse)
+
+    javadoc {
+        exclude "**/internal/**"
+        exclude "**/java-gen/**"
+    }
+}

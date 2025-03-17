@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<configuration>
+    <driver id="virtual">
+        <device id="control-schedules">
+            <!-- control channels -->
+            <channel id="ActPow_Schedule_FSCH01_SCHEDULE_ENABLE">
+                <serverMapping id="iec61850">DER_Test_Server/ActPow_Schedule_FSCH01.EnaReq.Oper.ctlVal:CO</serverMapping>
+                <valueType>BOOLEAN</valueType>
+                <listening>true</listening>
+            </channel>
+            <channel id="ActPow_Schedule_FSCC1_SCHEDULE_CONTROLLER_OUTPUT">
+                <serverMapping id="iec61850">DER_Test_Server/ActPow_FSCC1.ValMV.mag.f:MX</serverMapping>
+                <valueType>FLOAT</valueType>
+                <samplingInterval>100ms</samplingInterval>
+            </channel>
+            <channel id="ActPow_Schedule_FSCH01_SCHEDULE_DISABLE">
+                <serverMapping id="iec61850">DER_Test_Server/ActPow_Schedule_FSCH01.DsaReq.Oper.ctlVal:CO</serverMapping>
+                <valueType>BOOLEAN</valueType>
+                <listening>true</listening>
+            </channel>
+            <channel id="ActPow_Schedule_FSCC1_RESERVE_SCHEDULE_VALUE">
+                <serverMapping id="iec61850">DER_Test_Server/ActPow_Res_FSCH01.ValASG001.setMag.f</serverMapping>
+            </channel>
+        </device>
+        <device id="dummy-mapping">
+            <channel id="test-channel-vendor">
+                <serverMapping id="iec61850">DER_Test_Server/LLN0.NamPlt.vendor</serverMapping>
+                <valueType length="25">STRING</valueType>
+            </channel>
+        </device>
+    </driver>
+</configuration>

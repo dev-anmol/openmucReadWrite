@@ -1,0 +1,34 @@
+def projectName = "OpenMUC Driver - REST"
+def projectDescription = "REST driver for the OpenMUC framework."
+
+configurations.create('embed')
+
+if(rootProject.tasks.findByName("codeCoverageReport"))
+    rootProject.tasks.codeCoverageReport.enabled(false)
+
+dependencies {
+    implementation project(':openmuc-core-spi')
+    implementation project(':openmuc-core-api')
+    implementation project(':openmuc-lib-rest1')
+    implementation group: "commons-codec", name: "commons-codec", version: commonsCodecVersion
+}
+
+jar {
+    bnd('Bundle-Name': projectName,
+        'Import-Package': '*' + jarDefaultImportPackageVersion)
+
+    into('lib') {
+        from configurations.embed
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            pom {
+                name = projectName
+                description = projectDescription
+            }
+        }
+    }
+}

@@ -1,0 +1,4 @@
+Export-Package=org.openmuc.framework.lib.*
+Bundle-SymbolicName=org.openmuc.framework.openmuc-lib-filePersistence
+Bundle-Name=OpenMUC Library - File Persistence
+Bundle-Vendor=Fraunhofer ISE

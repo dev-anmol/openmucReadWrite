@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SCL>
+   <Header id="0" version="0"/>
+   <Communication>
+      <SubNetwork name="SubNetworkName">
+         <ConnectedAP apName="SubstationRing1" iedName="NewIED">
+            <Address>
+               <P type="OSI-AP-Title">1,1,9999,1</P>
+               <P type="OSI-AE-Qualifier">12</P>
+               <P type="OSI-PSEL">00000001</P>
+               <P type="OSI-SSEL">0001</P>
+               <P type="OSI-TSEL">0001</P>
+               <P type="IP">192.168.1.100</P>
+               <P type="IP-SUBNET">255.255.255.0</P>
+               <P type="IP-GATEWAY">192.168.1.1</P>
+               <P type="MAC-Address">00-01-02-03-04-05</P>
+            </Address>
+         </ConnectedAP>
+      </SubNetwork>
+   </Communication>
+   <IED desc="NewIED" manufacturer="SystemCORP Pty Ltd" name="NewIED" type="RTUType">
+      <Services nameLength="64">
+         <ClientServices/>
+      </Services>
+      <AccessPoint name="SubstationRing1" router="false">
+         <Server timeout="30">
+            <Authentication/>
+            <LDevice inst="LDevice1">
+               <LN0 desc="Logical node zero" inst="" lnClass="LLN0" lnType="LLN0_0"/>
+            </LDevice>
+         </Server>
+      </AccessPoint>
+   </IED>
+   <DataTypeTemplates>
+      <LNodeType id="LLN0_0" lnClass="LLN0">
+         <DO desc="Controllable single point" name="TestOpenmuc" type="SPC_0"/>
+      </LNodeType>
+      <DOType cdc="SPC" desc="Controllable single point" id="SPC_0">
+         <DA bType="FLOAT32" fc="DC" name="testValue"/>
+      </DOType>
+      <DOType cdc="ENS" desc="Enumerated status" id="ENS_0">
+         <DA bType="Enum" dchg="true" fc="ST" name="stVal" type="HealthKind"/>
+         <DA bType="Quality" fc="ST" name="q" qchg="true"/>
+         <DA bType="Timestamp" fc="ST" name="t"/>
+      </DOType>
+   </DataTypeTemplates>
+</SCL>

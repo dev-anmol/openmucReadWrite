@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<configuration>
+
+    <driver id="csv">
+        <samplingTimeout>10s</samplingTimeout>
+        <connectRetryInterval>1m</connectRetryInterval>
+        <device id="home1">
+            <description/>
+            <deviceAddress>./csv-driver/home1.csv</deviceAddress>
+            <settings></settings>
+            <channel id="hhmmss">
+                <description>hhmmss</description>
+                <channelAddress>hhmmss</channelAddress>
+                <samplingInterval>100ms</samplingInterval>
+            </channel>
+
+        </device>
+    </driver>
+
+</configuration>

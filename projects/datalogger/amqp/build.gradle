@@ -1,0 +1,27 @@
+def projectName = "OpenMUC Data Logger - AMQP"
+def projectDescription = "AMQP data logger for the OpenMUC framework."
+
+dependencies {
+    implementation project(':openmuc-core-spi')
+    implementation project(':openmuc-core-api')
+    implementation project(':openmuc-core-datamanager')
+    implementation project(':openmuc-lib-amqp')
+    implementation project(':openmuc-lib-osgi')
+    implementation group: 'com.google.code.gson', name: 'gson', version: gsonVersion
+    implementation group: 'org.osgi', name: 'org.osgi.service.cm', version: osgiServiceCmVersion
+}
+
+jar {
+    bnd('Bundle-Name': projectName)
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            pom {
+                name = projectName
+                description = projectDescription
+            }
+        }
+    }
+}

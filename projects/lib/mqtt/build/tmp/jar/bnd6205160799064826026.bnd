@@ -1,0 +1,6 @@
+Export-Package=org.openmuc.framework.lib.*
+Bundle-SymbolicName=org.openmuc.framework.openmuc-lib-mqtt
+Bundle-Name=OpenMUC Library - MQTT Service
+Bundle-Vendor=Fraunhofer ISE
+Bundle-ClassPath=.,lib/hivemq-mqtt-client-1.3.3.jar,lib/netty-handler-proxy-4.1.99.Final.jar,lib/netty-codec-http-4.1.99.Final.jar,lib/netty-handler-4.1.99.Final.jar,lib/netty-codec-socks-4.1.99.Final.jar,lib/netty-codec-4.1.99.Final.jar,lib/netty-transport-native-unix-common-4.1.99.Final.jar,lib/netty-transport-4.1.99.Final.jar,lib/netty-buffer-4.1.99.Final.jar,lib/netty-resolver-4.1.99.Final.jar,lib/netty-common-4.1.99.Final.jar,lib/jctools-core-2.1.2.jar,lib/annotations-16.0.3.jar,lib/dagger-2.27.jar,lib/rxjava-2.2.21.jar,lib/reactive-streams-1.0.4.jar,lib/javax.inject-1.jar
+Import-Package=org.openmuc.*,org.slf4j.*,javax.*,sun.misc.*

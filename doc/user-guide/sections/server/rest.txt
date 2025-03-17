@@ -1,0 +1,90 @@
+[[id_restful_web_services]]
+== REST Server
+
+The openmuc-server-restws bundle manages a RESTful web service to access all registered channels of the framework.
+The RESTful web service is accessed by the same port as the web interface mentioned in Chapter 2.
+
+TIP: The address to access the web service using the provided demo/framework folder is 'http://localhost:8888/rest/'
+
+=== Requirements
+
+In order to start the RESTful web service, the following bundle must be provided:
+
+- Bundle that provides an org.osgi.service.http.HttpService service.
+In the demo framework, that service is provided by the org.apache.felix.http.jetty bundle.
+
+This bundles is already provided by the demo framework.
+The RESTful web service will start automatically with the framework without additional settings.
+
+=== Accessing channels
+
+The latest record of a single channel can be accessed, by sending a GET request at the address:
+'http://server-address/rest/channels/\{id\}' where \{id\} is replaced with the actual channel ID.
+The result will be latest record object of the channel encoded in JSON with the following structure:
+
+.Record JSON
+[source,json]
+----
+{
+  "timestamp" : time_val, /*milliseconds since Unix epoch*/
+  "flag" : flag_val,      /*status flag of the record as string*/
+  "value" : value_val     /*actual value. Omitted if "flag" != "valid"*/
+}
+----
+
+You can access logged values of a channel by adding '/history?from=fromTimestamp&until=untilTimestamp' to the channel address, fromTimestamp and untilTimestamp are both milliseconds since Unix epoch (1970-01-01 00:00:00).
+The result is a collection of records encoded as JSON.
+
+Additionally, the records off all available channels can be read in one go, by omitting the ID from the address.
+The result is a collection of channel objects encoded in JSON using this structure:
+
+.ChannelCollection JSON
+[source,json]
+----
+[
+    {
+        "id" : channel1_id,  /*ID of the channel as string*/
+        "record" : channel1_record /*current record. see Record JSON*/
+    },
+    {
+        "id" : channel2_id,
+        "record" : channel2_record
+    }
+    ...
+]
+----
+
+New records can be written to channels by sending a PUT request at the address that represents a channel.
+The data in the put request is a record encoded as specified in Record JSON above.
+
+If HTTPS is used to access the REST server then HTTP basic authentication is required.
+The login credentials are the same as the one used to log into the web interface of the OpenMUC Framework.
+
+=== CORS
+
+The rest Server has the ability to handle CORS(Cross-Origin Resource Sharing).
+CORS is explained in detail link:https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS[here].
+Typically this functionality is needed when your browser sends an OPTIONS request instead of the request (f.e. GET, POST etc.) that you intended to send.
+Per default CORS is is deactivated for the rest Server.
+The functionality can be activated via the system.properties file located in the openmuc/framework/conf/ directory.
+If the following lines are not there add them.
+
+.system.properties
+----
+# Activate CORS functionality for the rest Server
+org.openmuc.framework.server.restws.enable_cors = true
+
+# Origins and methods for CORS , for each origin semicolon separated
+org.openmuc.framework.server.restws.url_cors = http://localhost:4200; http://localhost:8456
+org.openmuc.framework.server.restws.methods_cors = GET, PUT; POST
+org.openmuc.framework.server.restws.headers_cors = Authorization, Content-Type; Authorization
+----
+
+The variable enable_cors activates or deactivates the support for CORS.
+The variables for url_cors, methods_cors, header_cors defines the allowed origins and the methods these origins are allowed to send to the server.
+Multiple origins are semicolon separated with the methods and headers separated by the same order as the origins.
+The methods and headers for each origin are then separated by comma.
+This means that in the above example the origin:
+
+http://localhost:4200 is a trusted origin which is allowed to send GET and PUT requests and uses the headers Authorization and Content-Type. +
+http://localhost:8456 is a trusted origin which is allowed to send POST requests and uses the header Authorization.

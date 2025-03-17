@@ -1,0 +1,29 @@
+Manifest-Version: 1.0
+Bnd-LastModified: 1730796692626
+Bundle-ClassPath: .,lib/j2mod-3.2.1.jar
+Bundle-ManifestVersion: 2
+Bundle-Name: OpenMUC Driver - Modbus
+Bundle-SymbolicName: org.openmuc.framework.openmuc-driver-modbus
+Bundle-Vendor: Fraunhofer ISE
+Bundle-Version: 0.20.1
+Created-By: 11.0.24 (Ubuntu)
+Import-Package: org.openmuc.framework.config;version=0,org.openmuc.fra
+ mework.data;version=0,org.openmuc.framework.driver.spi;version=0,org.
+ slf4j;version=0
+Private-Package: lib,org.openmuc.framework.driver.modbus,org.openmuc.f
+ ramework.driver.modbus.rtu,org.openmuc.framework.driver.modbus.tcp,or
+ g.openmuc.framework.driver.modbus.udp,org.openmuc.framework.driver.mo
+ dbus.util,com.ghgande.j2mod.modbus,com.ghgande.j2mod.modbus.facade,co
+ m.ghgande.j2mod.modbus.io,com.ghgande.j2mod.modbus.msg,com.ghgande.j2
+ mod.modbus.net,com.ghgande.j2mod.modbus.procimg,com.ghgande.j2mod.mod
+ bus.slave,com.ghgande.j2mod.modbus.util
+Provide-Capability: osgi.service;objectClass:List<String>="org.openmuc
+ .framework.driver.spi.DriverService";uses:="org.openmuc.framework.dri
+ ver.spi"
+Require-Capability: osgi.extender;filter:="(&(osgi.extender=osgi.compo
+ nent)(version>=1.5.0)(!(version>=2.0.0)))",osgi.ee;filter:="(&(osgi.e
+ e=JavaSE)(version=1.8))"
+Service-Component: OSGI-INF/org.openmuc.framework.driver.modbus.Modbus
+ Driver.xml
+Tool: Bnd-6.4.0.202211291949
+

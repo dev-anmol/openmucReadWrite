@@ -1,0 +1,26 @@
+=== eHZ
+
+OpenMUC driver for SML and IEC 62056-21
+
+*Dependencies:* jrxtx-1.0.1.jar (stored in dependencies folder) and link:https://github.com/openmuc/jrxtx[jrxtx]
+
+To include the ehz driver and jrxtx-1.0.1.jar from the dependencies folder into your OpenMUC project, include the following into your bundles.conf.gradle:
+----
+    osgibundles group: "org.openmuc.framework", name: "openmuc-driver-ehz", version: openmucVersion
+    osgibundles files("../dependencies/rxtx/jrxtx-1.0.1.jar")
+----
+
+.Configuration Synopsis
+[{driver_table_op}, cols="1,4"]
+|=========================================================
+|ID | ehz
+|Device Address | sml://<serialPort> or iec://<serialPort>  e.g. sml:///dev/ttyUSB0
+|Settings |
+|Channel Address | <OBIScode> e.g. 10181ff (not 1-0:1.8.1*255)
+|=========================================================
+
+
+scanForDevices() and scanForChannels will return the specific configuration.
+
+
+

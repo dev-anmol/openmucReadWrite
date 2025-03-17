@@ -1,0 +1,4 @@
+Export-Package=org.openmuc.framework.*
+Bundle-SymbolicName=org.openmuc.framework.openmuc-webui-spi
+Bundle-Name=OpenMUC WebUI - SPI
+Bundle-Vendor=Fraunhofer ISE

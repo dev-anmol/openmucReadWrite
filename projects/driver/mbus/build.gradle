@@ -1,0 +1,42 @@
+def projectName = "OpenMUC Driver - M-Bus"
+def projectDescription = "M-Bus (wired) driver for the OpenMUC framework."
+
+configurations.create('embed')
+
+def jmbusversion = '3.3.0'
+def jrxtxversion = '1.0.1'
+
+dependencies {
+    implementation project(':openmuc-core-spi')
+
+    implementation group: 'org.openmuc', name: 'jrxtx', version: jrxtxversion
+    implementation group: 'org.openmuc', name: 'jmbus', version: jmbusversion
+    embed group: 'org.openmuc', name: 'jmbus', version: jmbusversion
+
+
+    testImplementation group: 'org.junit.vintage', name: 'junit-vintage-engine', version: junitVersion
+    testImplementation group: 'org.mockito', name:'mockito-core', version: mockitoVersion
+    testImplementation 'org.powermock:powermock-api-mockito2:2.0.2'
+    testImplementation 'org.powermock:powermock-module-junit4:2.0.2'
+}
+
+jar {
+    bnd('Bundle-Name': projectName,
+        'Bundle-ClassPath': '.,lib/jmbus-' + jmbusversion + '.jar',
+        'Import-Package': '!org.openmuc.jmbus*,gnu.io,*' + jarDefaultImportPackageVersion)
+
+    into('lib') {
+        from configurations.embed
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            pom {
+                name = projectName
+                description = projectDescription
+            }
+        }
+    }
+}

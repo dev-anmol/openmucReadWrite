@@ -1,0 +1,8 @@
+Export-Package=org.openmuc.framework.app.modbusread;version\=0.20.1
+-metatype=*
+Bundle-SymbolicName=org.openmuc.framework.app.modbusread
+Bundle-Version=0.20.1
+Bundle-Name=OpenMUC App - Modbus Read Demo
+Bundle-Vendor=Fraunhofer ISE
+Import-Package=org.osgi.service.component;version\="[1.5,2)",org.osgi.service.component.annotations;version\="[1.5,2)",org.openmuc.framework.data;version\="[0.20,1)",org.openmuc.framework.dataaccess;version\="[0.20,1)",org.slf4j;version\="[1.7,2)",*
+-dsannotations=*

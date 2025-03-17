@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<configuration>
+    <driver id="virtual">
+        <device id="some-mapped-values">
+            <channel id="some-server-node">
+                <serverMapping id="iec61850">NewIEDLDevice1/LLN0.TestOpenmuc.testValue</serverMapping>
+                <valueType>FLOAT</valueType>
+            </channel>
+        </device>
+    </driver>
+</configuration>

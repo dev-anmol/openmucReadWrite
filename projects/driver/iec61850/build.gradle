@@ -1,0 +1,40 @@
+
+def projectName = "OpenMUC Driver - IEC 61850"
+def projectDescription = "IEC 61850 driver for the OpenMUC framework."
+
+configurations.create('embed')
+
+def iec61850version = '1.9.0'
+def jasn1name = 'asn1bean'
+def jasn1version = '1.12.0'
+
+dependencies {
+  implementation project(':openmuc-core-spi')
+
+  implementation group: 'com.beanit', name: 'iec61850bean', version: iec61850version
+  embed group: 'com.beanit', name: 'iec61850bean',  version: iec61850version
+  embed group: 'com.beanit', name: jasn1name,       version: jasn1version
+
+  testImplementation group: 'org.hamcrest', name: 'hamcrest', version: '2.2'
+}
+
+jar {
+    bnd('Bundle-Name': projectName,
+            'Bundle-ClassPath': '.,lib/iec61850bean-' + iec61850version + '.jar,lib/' + jasn1name + '-' + jasn1version + '.jar',
+            'Import-Package': '!com.beanit.openiec61850.*,javax.net,*' + jarDefaultImportPackageVersion)
+
+    into('lib') {
+        from configurations.embed
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            pom {
+                name = projectName
+                description = projectDescription
+            }
+        }
+    }
+}

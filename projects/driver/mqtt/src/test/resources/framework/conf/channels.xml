@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<configuration>
+
+    <driver id="mqtt">
+        <connectRetryInterval>30s</connectRetryInterval>
+        <device id="LOCAL_MQTT">
+            <deviceAddress>localhost</deviceAddress>
+            <settings>
+                port=1234;
+                localPort=4321;
+                parser=openmuc;
+                username=anakin;
+                password=padme;
+                recordCollectionSize=123;
+                ssl=true;
+                maxBufferSize=42;
+                maxFileSize=1337;
+                maxFileCount=23;
+                connectionRetryInterval=456;
+                connectionAliveInterval=777;
+                firstWillTopic=first-will-topic;
+                firstWillPayload=hello-world;
+                lastWillTopic=last-will-topic;
+                lastWillPayload=goodbye;
+                lastWillAlways=true;
+                persistenceDirectory=/tmp/mqtt-driver;
+                retainedMessages=true;
+                proxyConfiguration=http://1.2.3.4:5678;
+            </settings>
+        </device>
+    </driver>
+</configuration>

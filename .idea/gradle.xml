@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="GradleMigrationSettings" migrationVersion="1" />
+  <component name="GradleSettings">
+    <option name="linkedExternalProjectsSettings">
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/projects/app/modbusread" />
+            <option value="$PROJECT_DIR$/projects/app/modbuswrite" />
+            <option value="$PROJECT_DIR$/projects/core/api" />
+            <option value="$PROJECT_DIR$/projects/core/datamanager" />
+            <option value="$PROJECT_DIR$/projects/core/spi" />
+            <option value="$PROJECT_DIR$/projects/datalogger/amqp" />
+            <option value="$PROJECT_DIR$/projects/datalogger/ascii" />
+            <option value="$PROJECT_DIR$/projects/datalogger/mqtt" />
+            <option value="$PROJECT_DIR$/projects/datalogger/slotsdb" />
+            <option value="$PROJECT_DIR$/projects/datalogger/sql" />
+            <option value="$PROJECT_DIR$/projects/driver/aggregator" />
+            <option value="$PROJECT_DIR$/projects/driver/amqp" />
+            <option value="$PROJECT_DIR$/projects/driver/csv" />
+            <option value="$PROJECT_DIR$/projects/driver/ehz" />
+            <option value="$PROJECT_DIR$/projects/driver/iec60870" />
+            <option value="$PROJECT_DIR$/projects/driver/iec61850" />
+            <option value="$PROJECT_DIR$/projects/driver/iec62056p21" />
+            <option value="$PROJECT_DIR$/projects/driver/knx" />
+            <option value="$PROJECT_DIR$/projects/driver/math" />
+            <option value="$PROJECT_DIR$/projects/driver/mbus" />
+            <option value="$PROJECT_DIR$/projects/driver/modbus" />
+            <option value="$PROJECT_DIR$/projects/driver/mqtt" />
+            <option value="$PROJECT_DIR$/projects/driver/rest" />
+            <option value="$PROJECT_DIR$/projects/driver/snmp" />
+            <option value="$PROJECT_DIR$/projects/driver/wmbus" />
+            <option value="$PROJECT_DIR$/projects/lib/amqp" />
+            <option value="$PROJECT_DIR$/projects/lib/filePersistence" />
+            <option value="$PROJECT_DIR$/projects/lib/mqtt" />
+            <option value="$PROJECT_DIR$/projects/lib/osgi" />
+            <option value="$PROJECT_DIR$/projects/lib/parser/openmuc" />
+            <option value="$PROJECT_DIR$/projects/lib/rest1" />
+            <option value="$PROJECT_DIR$/projects/lib/ssl" />
+            <option value="$PROJECT_DIR$/projects/server/iec61850" />
+            <option value="$PROJECT_DIR$/projects/server/modbus" />
+            <option value="$PROJECT_DIR$/projects/server/restws" />
+            <option value="$PROJECT_DIR$/projects/webui/base" />
+            <option value="$PROJECT_DIR$/projects/webui/channelaccesstool" />
+            <option value="$PROJECT_DIR$/projects/webui/channelconfigurator" />
+            <option value="$PROJECT_DIR$/projects/webui/dataexporter" />
+            <option value="$PROJECT_DIR$/projects/webui/dataplotter" />
+            <option value="$PROJECT_DIR$/projects/webui/mediaviewer" />
+            <option value="$PROJECT_DIR$/projects/webui/simpledemovisualisation" />
+            <option value="$PROJECT_DIR$/projects/webui/spi" />
+            <option value="$PROJECT_DIR$/projects/webui/userconfigurator" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+    </option>
+  </component>
+</project>

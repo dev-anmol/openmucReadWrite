@@ -1,0 +1,5 @@
+Bundle-SymbolicName=org.openmuc.framework.openmuc-server-iec61850
+Bundle-Name=OpenMUC Server - IEC 61850
+Bundle-Vendor=Fraunhofer ISE
+Bundle-ClassPath=.,lib/iec61850bean-1.9.0.jar,lib/asn1bean-1.12.0.jar
+Import-Package=\!com.beanit.openiec61850.*,*;version\=0

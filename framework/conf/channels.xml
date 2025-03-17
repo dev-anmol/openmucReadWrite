@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <driver id="modbus">
+    <device id="device1">
+      <deviceAddress>127.0.0.1:502</deviceAddress>
+      <settings>TCP</settings>
+      <channel id="register1">
+        <channelAddress>1:HOLDING_REGISTERS:1000:INT16</channelAddress>
+        <valueType>SHORT</valueType>
+        <samplingInterval>1000</samplingInterval>
+        <loggingInterval>4000</loggingInterval>
+        <settings>
+          <setting id="TIMEOUT">3000</setting>
+        </settings>
+      </channel>
+    </device>
+  </driver>
+</configuration>

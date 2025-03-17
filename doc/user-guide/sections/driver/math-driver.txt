@@ -1,0 +1,106 @@
+=== Math
+
+The math driver is a virtual driver that does calculations or evaluates expressions based on other numeric (FLOAT or DOUBLE) channel's values or constants.
+It will read from other channels automatically.
+The math driver is fully configurable through the
+channels.xml config file.
+The math driver supports common math functions and expressions such as:
+
+ * addition and subtraction
+ * multiplication and division
+ * trigonometric functions (sin, cos, tan)
+ * logarithm / exponential functions
+ * min / max expressions
+ * ...
+
+For a full list of operators, please see
+link:https://javaluator.sourceforge.net/en/doc/javadoc/[the underlying library's documentation].
+
+Configuration Synopsis
+[{driver_table_op}, cols="1,1,4,4,2"]
+|=========================================================
+| Option | Mandatory | Possible values | Default | Description
+| ID | yes | math | |  Selection of the math driver
+| Channel Address | no | A+B +
+ A-B +
+ -A +
+ A*B +
+ A/B +
+ A^B +
+ A%B +
+ abs(A) +
+ sin(A) +
+ cons(A) +
+ tan(A) +
+ floor(A) +
+ ln(A)  - natural log (base e) +
+ log(A) - base 10 log +
+ max(A,B) +
+ min(A,B) +
+ ceil(A) round up +
+ round(A) +
+ fllor(A) - round down +
+ sum(A,B) +
+ random - pseudo-random number (0..1) +
+ ...and there is even more, see hyperlink in right column!
+ | | The mathematical expression to determine the channel value. A and B can either be numbers, or references to other channels in format '§other-channel-id§' or mathermatical expressions. +
+ For a full list of operators, please see link:https://javaluator.sourceforge.net/en/doc/javadoc/[the underlying library's documentation].
+| Settings | yes  | math-ts-strategy=use_older_timestamp +
+math-ts-strategy=use_average_timestamp +
+math-ts-strategy=use_newer_timestamp | math-ts-strategy=use_older_timestamp | Determines how the result timestamp is calculated from the input timestamps
+|=========================================================
+
+
+To reference the values of a different channel, wrap the channel id in §'s: e.g. if the values of a channel with id
+'raw-data' shall be used, reference it as '§raw-data§'.
+
+Records of channels are only processed if they are valid (if their Flag is VALID, in other words if there is no error present).
+If there is any flag other than VALID, the calculation is aborted.
+
+Example:
+
+Channel A (channelA) and Channel B (channelB) are sampled every 10 seconds.
+
+[source,xml]
+----
+ <channelid="channelA">
+   <samplingInterval>10s</samplingInterval>
+   <valueType>DOUBLE</valueType>
+ </channel>
+  <channelid="channelB">
+    <samplingInterval>10s</samplingInterval>
+    <valueType>FLOAT</valueType>
+  </channel>
+----
+
+Another Example:
+
+Now you want a channel C (channelC) that contains the sum and a channel D (channelD) which contains the difference but no less than 0:
+
+[source,xml]
+----
+ <driver id="math">
+   <device id="my_math_device">
+     <channel id="channelC">
+       <channelAddress>§channelA§+§channelB§</channelAddress>
+       <samplingInterval>10s</samplingInterval>
+       <loggingInterval>60s</loggingInterval>
+       <samplingTimeOffset>1s</samplingTimeOffset>
+       <loggingTimeOffset>1s</loggingTimeOffset>
+       <settings>math-ts-strategy=use_newer_timestamp</settings>
+     </channel>
+
+     <channel id="channelD">
+       <channelAddress>max(§channelA§-§channelB§, 0)</channelAddress>
+       <samplingInterval>10s</samplingInterval>
+       <loggingInterval>60s</loggingInterval>
+       <samplingTimeOffset>1s</samplingTimeOffset>
+       <loggingTimeOffset>1s</loggingTimeOffset>
+     </channel>
+   </device>
+ </driver>
+----
+
+Please also pay attention to the samplingTimeOffset and loggingTimeOffset. These are useful to make sure channelC and
+channelD are only calculated after new measurements (records) are available for the input channels channelA and channelB.
+

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<configuration>
+    <driver id="math">
+        <device id="calc1">
+            <channel id="DIFF">
+                <description>difference of channels Const_5 and Const_3</description>
+                <channelAddress>§Const_5§-§Const_3§</channelAddress>
+                <samplingInterval>1s</samplingInterval>
+            </channel>
+        </device>
+    </driver>
+
+    <driver id="virtual">
+        <device id="consts">
+            <channel id="Const_3">
+            </channel>
+            <channel id="Const_5">
+            </channel>
+            <channel id="Const_7">
+            </channel>
+        </device>
+    </driver>
+</configuration>

@@ -1,0 +1,24 @@
+def projectName = "OpenMUC Core - Data Manager"
+
+dependencies {
+    implementation project(':openmuc-core-spi')
+    implementation group: 'org.apache.felix', name: 'org.apache.felix.gogo.runtime', version: '1.1.6'
+    api group: 'org.osgi', name: 'org.osgi.service.useradmin', version: '1.1.1'
+
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params' ,version: junitVersion
+}
+
+jar {
+    bnd('Bundle-Name': projectName)
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            pom {
+                name = projectName
+                description = "The data manager is the core bundle of the OpenMUC framework."
+            }
+        }
+    }
+}

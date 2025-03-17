@@ -1,0 +1,35 @@
+def projectName = "OpenMUC Driver - IEC 60870-5-104"
+def projectDescription = "IEC 60870-5-104 driver for the OpenMUC framework."
+
+configurations.create('embed')
+
+def j60870version = '1.7.2'
+
+dependencies {
+    implementation project(':openmuc-core-spi')
+
+    implementation group: 'org.openmuc', name: 'j60870', version: j60870version
+    embed group: 'org.openmuc', name: 'j60870', version: j60870version
+}
+
+jar {
+    bnd('Bundle-Name': projectName,
+            'Bundle-ClassPath': '.,lib/j60870-' + j60870version + '.jar',
+            'Import-Package': '!org.openmuc.j60870*,javax.net,*' + jarDefaultImportPackageVersion
+    )
+
+    into('lib') {
+        from configurations.embed
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            pom {
+                name = projectName
+                description = projectDescription
+            }
+        }
+    }
+}

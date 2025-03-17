@@ -1,0 +1,35 @@
+def projectName = "OpenMUC App - Simple Demo"
+
+dependencies {
+    implementation project(':openmuc-core-api')
+
+    testImplementation project(':openmuc-core-spi')
+    testImplementation project(':openmuc-core-datamanager')
+    testImplementation project(':openmuc-core-datamanager').sourceSets.test.output
+    testImplementation project(':openmuc-driver-csv')
+    testImplementation project(':openmuc-datalogger-ascii')
+    testImplementation project(':openmuc-driver-math')
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: mockitoVersion
+    testImplementation("commons-io:commons-io:2.16.1")
+}
+
+jar {
+    bnd('Bundle-Name': projectName)
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            pom {
+                name = projectName
+                description = "A simple demo app for the OpenMUC framework."
+            }
+        }
+    }
+}
+
+task demoConfigTest(type: Test){
+    useJUnitPlatform {
+        includeTags 'demoConfigTest'
+    }
+}

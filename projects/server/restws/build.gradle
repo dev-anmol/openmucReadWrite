@@ -1,0 +1,29 @@
+def projectName = "OpenMUC Server - RESTful Web Service"
+def projectDescription = "REST server for the OpenMUC framework."
+
+configurations.create('embed')
+
+dependencies {
+    implementation project(':openmuc-core-api')
+    implementation project(':openmuc-lib-rest1')
+    implementation group: "commons-codec", name: "commons-codec", version: commonsCodecVersion
+
+    implementation group: 'org.apache.felix', name: 'org.apache.felix.http.servlet-api', version: apacheFelixServletVersion
+}
+
+jar {
+    bnd('Bundle-Name': projectName)
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            pom {
+                name = projectName
+                description = projectDescription
+            }
+        }
+    }
+}
+
+

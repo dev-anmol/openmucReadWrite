@@ -1,0 +1,44 @@
+def projectName = "OpenMUC Driver - Math"
+def projectDescription = "Apply mathematical operations on values provided by other drivers of the OpenMUC framework."
+
+
+configurations.create('embed')
+def javaluator_version = "3.0.4"
+
+dependencies {
+    implementation project(':openmuc-core-spi')
+    implementation project(':openmuc-core-api')
+
+    // https://mvnrepository.com/artifact/com.fathzer/javaluator
+    implementation("com.fathzer:javaluator:"+javaluator_version)
+    embed group: 'com.fathzer', name: 'javaluator', version: javaluator_version
+
+
+    testImplementation project(':openmuc-core-datamanager')
+
+    testImplementation project(':openmuc-driver-csv')
+    testImplementation project(':openmuc-datalogger-ascii')
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: mockitoVersion
+    testImplementation project(':openmuc-core-datamanager').sourceSets.test.output
+}
+
+jar {
+    bnd('Bundle-Name': projectName,
+            'Bundle-ClassPath': '.,lib/javaluator-' + javaluator_version + '.jar',
+            'Import-Package': '!com.fathzer.javaluator*,*' + jarDefaultImportPackageVersion)
+
+    into('lib') {
+        from configurations.embed
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            pom {
+                name = projectName
+                description = projectDescription
+            }
+        }
+    }
+}

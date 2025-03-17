@@ -1,0 +1,6 @@
+Export-Package=org.openmuc.framework.lib.amqp
+Bundle-SymbolicName=org.openmuc.framework.openmuc-lib-amqp
+Bundle-Name=OpenMUC Library - AMQP Service
+Bundle-Vendor=Fraunhofer ISE
+Bundle-ClassPath=.,lib/amqp-client-5.21.0.jar
+Import-Package=\!com.rabbitmq.*,org.openmuc.framework.security,org.openmuc.framework.lib.filePersistence,org.slf4j,javax.net,javax.net.ssl,;resolution\:\=optional,*;version\=0
