@@ -62,11 +62,9 @@ import com.ghgande.j2mod.modbus.util.BitVector;
 public abstract class ModbusConnection implements Connection {
 
     private static final Logger logger = LoggerFactory.getLogger(ModbusConnection.class);
-
     private ModbusTransaction transaction;
     // List do manage Channel Objects to avoid to check the syntax of each channel address for every read or write
     private final Hashtable<String, ModbusChannel> modbusChannels;
-
     private int requestTransactionId;
     private final int MAX_RETRIES_FOR_JAMOD = 0;
     private final int MAX_RETRIES_FOR_DRIVER = 3;
@@ -74,7 +72,6 @@ public abstract class ModbusConnection implements Connection {
     public abstract void connect() throws ConnectionException;
 
     public ModbusConnection() {
-
         transaction = null;
         modbusChannels = new Hashtable<>();
     }
@@ -225,7 +222,6 @@ public abstract class ModbusConnection implements Connection {
         // check if the channel object already exists in the list
         if (modbusChannels.containsKey(channelAddress)) {
             modbusChannel = modbusChannels.get(channelAddress);
-
             // if the channel object exists the access flag might has to be updated
             // (this is case occurs when the channel is readable and writable)
             if (!modbusChannel.getAccessFlag().equals(access)) {
@@ -324,9 +320,7 @@ public abstract class ModbusConnection implements Connection {
     }
 
     private boolean isTransactionIdMatching() {
-
         boolean isMatching = false;
-
         int requestId = transaction.getRequest().getTransactionID();
         int responseId = transaction.getResponse().getTransactionID();
 

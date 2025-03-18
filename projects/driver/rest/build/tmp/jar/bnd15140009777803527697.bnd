@@ -1,4 +1,0 @@
-Bundle-SymbolicName=org.openmuc.framework.openmuc-driver-rest
-Bundle-Name=OpenMUC Driver - REST
-Bundle-Vendor=Fraunhofer ISE
-Import-Package=*;version\=0

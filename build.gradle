@@ -45,6 +45,10 @@ configure(subprojects) {
     apply plugin: "jacoco"
     apply plugin: "maven-publish"
 
+    configurations{
+        bundleLib
+    }
+
     group = cfgGroup
     sourceCompatibility = "1.8"
     targetCompatibility = "1.8"
@@ -80,6 +84,11 @@ configure(subprojects) {
         implementation group: 'org.slf4j', name: 'slf4j-api', version: slf4jApiVersion
         implementation group: 'ch.qos.logback', name: 'logback-core', version: logbackVersion
         implementation group: 'ch.qos.logback', name: 'logback-classic', version: logbackVersion
+        bundleLib 'org.osgi:org.osgi.service.component:1.5.1'
+        bundleLib 'org.osgi:org.osgi.service.component.annotations:1.5.1'
+        // Make these available at compile time
+        compileOnly 'org.osgi:org.osgi.service.component:1.5.1'
+        compileOnly  'org.osgi:org.osgi.service.component.annotations:1.5.1'
     }
 
     jar {
@@ -104,4 +113,11 @@ configure(subprojects) {
         exclude "**/internal/**"
         exclude "**/java-gen/**"
     }
+
+    task copyBundlesToFramework(type: Copy) {
+        from configurations.bundleLib
+        into "${rootProject.projectDir}/framework/bundle"
+    }
+
+    build.finalizedBy(copyBundlesToFramework)
 }

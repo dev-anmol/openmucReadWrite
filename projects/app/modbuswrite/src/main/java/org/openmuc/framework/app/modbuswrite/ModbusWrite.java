@@ -186,46 +186,42 @@ package org.openmuc.framework.app.modbuswrite;
 
 import org.openmuc.framework.data.ShortValue;
 import org.openmuc.framework.dataaccess.Channel;
+import org.openmuc.framework.dataaccess.ChannelChangeListener;
 import org.openmuc.framework.dataaccess.DataAccessService;
+import org.openmuc.framework.dataaccess.RecordListener;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import javax.sql.ConnectionPoolDataSource;
 import java.util.Timer;
 import java.util.TimerTask;
-
 @Component(service = {})
 public final class ModbusWrite {
     private static final Logger logger = LoggerFactory.getLogger(ModbusWrite.class);
     private static final String APP_NAME = "OpenMUC ModbusWrite App";
     private static final long UPDATE_INTERVAL_MS = 5000; // 5 seconds
-
     private Channel modbusChannel;
     private Timer updateTimer;
-
+    private boolean isConnected = false;
     private DataAccessService dataAccessService;
-
     @Reference
     public void setDataAccessService(DataAccessService dataAccessService) {
         this.dataAccessService = dataAccessService;
     }
-
     @Activate
     private void activate() {
         logger.info("Activating {}", APP_NAME);
-
         modbusChannel = dataAccessService.getChannel("register1"); // Use register1 from your config
         if (modbusChannel == null) {
             logger.error("Failed to get Modbus channel 'register1'. Check configuration.");
             return;
         }
-
         initUpdateTimer();
         logger.info("Successfully initialized periodic write to 'register1'");
     }
-
     @Deactivate
     private void deactivate() {
         logger.info("Deactivating {}", APP_NAME);
@@ -239,19 +235,38 @@ public final class ModbusWrite {
     private void initUpdateTimer() {
         updateTimer = new Timer("ModbusWrite Update");
         TimerTask task = new TimerTask() {
-            private short valueToWrite = 1234; // Example short value (-32768 to 32767)
+            private short valueToWrite = 1234;
             @Override
             public void run() {
                 try {
+                    // Check whether the device is connected or not.
+                    if (!isDeviceConnected()) {
+                        logger.warn("Modbus device not connected, skipping write operation");
+                        return;
+                    }
                     modbusChannel.write(new ShortValue(valueToWrite));
                     logger.info("Wrote short value {} to 'register1'", valueToWrite);
-                    valueToWrite += 1; // Increment for testing (optional)
-                    if (valueToWrite > 32767) valueToWrite = 1234; // Reset if exceeding SHORT max
-                } catch (Exception e) {
+                    valueToWrite += 1;
+                    if (valueToWrite > 32767) valueToWrite = 1234;
+                }
+                catch (Exception e) {
                     logger.error("Failed to write to 'register1': {}", e.getMessage(), e);
+                    isConnected = false;
                 }
             }
         };
         updateTimer.scheduleAtFixedRate(task, 0, UPDATE_INTERVAL_MS);
+    }
+
+    // This is added to check whether the device is connected or not.
+    private boolean isDeviceConnected(){
+        try{
+            isConnected = modbusChannel.isConnected();
+            return isConnected;
+        }
+        catch(Exception e ){
+            isConnected = false;
+            return false;
+        }
     }
 }

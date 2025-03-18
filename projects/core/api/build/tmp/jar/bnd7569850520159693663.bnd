@@ -1,4 +1,0 @@
-Export-Package=org.openmuc.framework.*, \!org.apache.*
-Bundle-SymbolicName=org.openmuc.framework.openmuc-core-api
-Bundle-Name=OpenMUC Core - API
-Bundle-Vendor=Fraunhofer ISE
