@@ -1,5 +1,0 @@
-Bundle-SymbolicName=org.openmuc.framework.openmuc-driver-knx
-Bundle-Name=OpenMUC Driver - KNX
-Bundle-Vendor=Fraunhofer ISE
-Bundle-ClassPath=.,lib/calimero-core-2.3.jar,lib/midpapi20-2.0.4.jar,lib/cldcapi11-2.0.4.jar
-Import-Package=\!tuwien.auto.calimero*,*;version\=0

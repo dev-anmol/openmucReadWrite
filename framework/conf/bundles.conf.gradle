@@ -54,6 +54,10 @@ dependencies {
     osgibundles group: 'org.openmuc.framework', name: 'openmuc-lib-ssl', version: openmucVersion
     osgibundles group: 'org.openmuc.framework', name: 'openmuc-lib-rest1', version: openmucVersion
 
+
+    osgibundles group: 'org.osgi', name: 'org.osgi.service.component', version: '1.5.1'
+    osgibundles group: 'org.osgi', name: 'org.osgi.service.component.annotations', version: '1.5.1'
+
     osgibundles group: 'org.openmuc.framework', name: 'openmuc-server-restws', version: openmucVersion
     osgibundles group: 'org.openmuc.framework', name: 'openmuc-server-iec61850', version: openmucVersion
 
